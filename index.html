@@ -1,102 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
- <title>MYMUSICK</title>
+  <meta charset="UTF-8">
+  <title>MYMUSICK</title>
   <link rel="icon" href="img/Logo.png">
- <meta charset="UTF-8">
- <style>
-header{
- display:flex;
- justify-content:space-around;
- align-items:center;
- background-color: #04CDA8;
- width:100%;
- height:150px;
-}
- body{
-  padding:0;
-  margin:0;
-  background-color:black;
- }
- @font-face{
-  font-family:'Gyanko';
-  src :url(fonts/gyanko-regular.otf) format("opentype");
-  font-style:normal;
-  font-weight: normal;
 
- }
- .title{
-   font-family: 'Gyanko', sans-serif;
-    font-size: 40px; 
-    letter-spacing: 2px; 
-    font-weight: normal; 
-    line-height: 1.2; 
-    color: #FF5757;
- }
-  .lgimg{
-   display:flex;
-   justify-content:flex-start;
-   align-items:center;
-  }
-  .search{
-  width: 250px;
-  padding: 12px 15px;
-  border-radius: 20px;
-  border: 2px solid #04CDA8;
-  outline: none;
-  font-size: 16px;
-  background-color:black;
-  color:white;
-  border-color:#FF5757;
-  }
-  .ctsearch{
-   display:flex;
-   justify-content:center;
-   align-items:center;
-  }
-  .bttlg{
-   border-radius:25px;
-   border: 2px solid #FF5757;
-   height:40px;
-   width:100px;
-   cursor:pointer;
-   background-color:black;
-   color:white;
-  }
-  .bttlg:hover{
-   background-color:white;
-   color:black;
-  }
-  .intxt{
-   color:white;
-   font-family:'Gyanko';
-   font-size:25px;
-   display:flex;
-   justify-content: center;
-  }
-  footer{
-   background-color:#04CDA8;
-  }
-</style>
- </head>
+  <style>
+    @font-face {
+      font-family: 'Gyanko';
+      src: url("fonts/gyanko-regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #04CDA8;
+      height: 150px;
+    }
+
+    .lgimg {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lgimg img {
+      height: 120px;
+      width: 120px;
+    }
+
+    .title {
+      font-family: 'Gyanko', sans-serif;
+      font-size: 40px;
+      letter-spacing: 2px;
+      color: #FF5757;
+    }
+
+    .ctsearch {
+      display: flex;
+      align-items: center;
+    }
+
+    .search {
+      width: 250px;
+      padding: 12px 15px;
+      border-radius: 20px;
+      border: 2px solid #FF5757;
+      outline: none;
+      font-size: 16px;
+      background-color: black;
+      color: white;
+    }
+
+    .bttlg {
+      border-radius: 25px;
+      border: 2px solid #FF5757;
+      height: 40px;
+      width: 120px;
+      cursor: pointer;
+      background-color: black;
+      color: white;
+    }
+
+    .bttlg:hover {
+      background-color: white;
+      color: black;
+    }
+
+    .intxt {
+      margin-top: 40px;
+      color: white;
+      font-family: 'Gyanko', sans-serif;
+      font-size: 25px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #04CDA8;
+      height: 80px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
 <body>
- <header>
+
+<header>
   <div class="lgimg">
-<img src="img/Logo.png" height="200" width="200">
- <h1 class="title">MYMUSICK</h1>
+    <img src="img/Logo.png" alt="Logo MYMUSICK">
+    <h1 class="title">MYMUSICK</h1>
   </div>
+
   <div class="ctsearch">
-   <input class="search" type="search" placeholder="Busca tu Música 🎵">
+    <input class="search" type="search" placeholder="Busca tu Música 🎵">
   </div>
-  <button class="bttlg" onclick="hola()" >Iniciar Sesión</button>
+
+  <button class="bttlg" type="button" onclick="hola()">Iniciar Sesión</button>
+</header>
+
+<p class="intxt">¿Qué vas a escuchar hoy?</p>
+
+<footer></footer>
+
 <script>
-function hola() {
- alert("hola");
-} 
+  function hola() {
+    alert("hola");
+  }
 </script>
- </header>
- <p1 class="intxt">¿Qué vas a escuchar hoy?</p1>
+
 </body>
- <footer>
- </footer>
 </html>
+
