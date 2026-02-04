@@ -101,15 +101,27 @@
   border-radius: 16px;
   color: white;
   width:500px;
-  display:flex;
-  justify-content:center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
   height:600px;
 }
- .lgimp{
-   border:2px solid #FF5757;
-   background:transparent;
-   border-radius:15px;
- }
+ .lgimp {
+  width: 80%;
+  padding: 12px 15px;
+  border-radius: 15px;
+  border: 2px solid #FF5757;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.lgimp::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
   </style>
 </head>
 
