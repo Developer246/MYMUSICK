@@ -112,15 +112,17 @@ dialog {
   border-radius: 16px;
   color: white;
   width: 500px;
+  transform: rotate(-540deg) scale(0);
+  opacity: 0;
+}
+
+dialog[open] {
+  animation: swirl-in-fwd 0.8s ease-out forwards;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-}
-
-dialog[open] {
-  animation: swirl-in-fwd 0.8s ease-out forwards;
 }
 
  .lgimp {
