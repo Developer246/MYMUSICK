@@ -101,10 +101,13 @@
   border-radius: 16px;
   color: white;
   width:500px;
+  transform: rotate(-360deg) scale(0);
+  opacity: 0;
 }
   dialog[open] {
   transform:rotate(360deg);
-    transition:2s;
+  opacity:1;
+  transition:2s;
   display: flex;
   flex-direction: column;
   justify-content: center;
