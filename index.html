@@ -115,6 +115,7 @@ dialog {
   transform: rotate(-540deg) scale(0);
   opacity: 0;
   font-family:'Gyanko';
+  line-height: 1.2;
 }
 
 dialog[open] {
@@ -140,7 +141,16 @@ dialog[open] {
 .lgimp::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-
+.password{
+  width: 80%;
+  padding: 12px 15px;
+  border-radius: 15px;
+  border: 2px solid #FF5757;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
   </style>
 </head>
 
@@ -164,7 +174,9 @@ dialog[open] {
 <footer></footer>
     <dialog id="login" closedby="any">
   <h3>Iniciar Sesión</h3>
+      <p>Mail</p>
     <input class="lgimp" type="email" placeholder="escribe tu email">
+      <p>Contraseña</p>
       <input class="password" type="password" placeholder="tu contraseño">
       <form method="dialog">
   <button>enviar</button>
