@@ -156,9 +156,9 @@ dialog[open] {
 }
  .ltbra {
   width: 150px;
-  height: 100vh-150px; 
-  background-color: #FFC857;
-   border:2px solid #000000;
+  height: calc(100vh-150px); 
+  background:transparent;
+  border:2px solid white;
   display: flex;
   justify-content: flex-start;
   position: fixed;
@@ -192,12 +192,12 @@ dialog[open] {
   <dialog id="login" closedby="any">
   <h3>Iniciar Sesión</h3>
       <p>Mail</p>
-    <input class="input-field" type="email"  placeholder="escribe tu email" required>
+    <input class="input-field" type="email"  required placeholder="escribe tu email" >
       <p>Contraseña</p>
-      <input class="input-field" type="password" placeholder="tu contraseña">
-      <form method="dialog">
-  <button>enviar</button>
-      </form>  
+      <input class="input-field" type="password" required placeholder="tu contraseña">
+    
+  <button type="submit">enviar</button>
+ 
 </dialog>
 
 <footer>
