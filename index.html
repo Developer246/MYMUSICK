@@ -149,13 +149,18 @@ dialog[open] {
 .input-field:invalid{
  animation: shake 300ms; 
 }
-  .ltbra{
-    width:150px;
-    height:100%;
-    backgound-color:#04CDA8;
-    display:flex;
-    justify-content:flex-start;
-  }
+ .ltbra {
+  width: 150px;
+  height: 100vh; 
+  background-color: #04CDA8;
+  display: flex;
+  justify-content: flex-start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  flex-direction: column;
+}
+
   </style>
 </head>
 
@@ -189,7 +194,10 @@ dialog[open] {
       </form>  
 </dialog>
 
-<footer></footer>
+<footer>
+  <p style="margin:auto; color:white;">© 2026 MYMUSICK</p>
+</footer>
+
 </body>
 </html>
 
