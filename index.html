@@ -125,7 +125,7 @@ dialog[open] {
   gap: 20px;
 }
 
- .lgimp {
+ .input-field {
   width: 80%;
   padding: 12px 15px;
   border-radius: 15px;
@@ -143,24 +143,14 @@ dialog[open] {
   100% { transform: translateX(0); }
 }
 
-.lgimp::placeholder {
+.input-field::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-.lgimp:invalid{
+.input-field:invalid{
  animation: shake 300ms; 
 }
-.password{
-  width: 80%;
-  padding: 12px 15px;
-  border-radius: 15px;
-  border: 2px solid #FF5757;
-  background: transparent;
-  color: white;
-  font-size: 16px;
-  outline: none;
-}
   .ltbra{
-    width:150;
+    width:150px;
     height:100%;
     display:flex;
     justify-content:flex-start;
@@ -190,9 +180,9 @@ dialog[open] {
   <dialog id="login" closedby="any">
   <h3>Iniciar Sesión</h3>
       <p>Mail</p>
-    <input class="lgimp" type="email"  placeholder="escribe tu email" required>
+    <input class="input-field" type="email"  placeholder="escribe tu email" required>
       <p>Contraseña</p>
-      <input class="password" type="password" placeholder="tu contraseña">
+      <input class="input-field" type="password" placeholder="tu contraseña">
       <form method="dialog">
   <button>enviar</button>
       </form>  
