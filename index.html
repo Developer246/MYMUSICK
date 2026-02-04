@@ -143,10 +143,10 @@ dialog[open] {
   100% { transform: translateX(0); }
 }
 
-.lgimp:placeholder {
+.lgimp::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-.lgimp :invalid{
+.lgimp:invalid{
  animation: shake 300ms; 
 }
 .password{
@@ -184,7 +184,7 @@ dialog[open] {
       <p>Mail</p>
     <input class="lgimp" type="email"  placeholder="escribe tu email" required>
       <p>Contraseña</p>
-      <input class="password" type="password" placeholder="tu contraseño">
+      <input class="password" type="password" placeholder="tu contraseña">
       <form method="dialog">
   <button>enviar</button>
       </form>  
