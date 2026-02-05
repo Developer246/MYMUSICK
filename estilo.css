@@ -120,12 +120,15 @@ dialog {
 
 dialog[open] {
   animation: bigger  0.8s ease-out forwards;
+}
+dialog form{
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  width:100%;
 }
-.intext{
+.intex{
   display:flex;
   justify-content:center;
 }
@@ -162,7 +165,7 @@ dialog[open] {
   align-items:center;
   justify-content: flex-start;
   position: fixed;
-  top: 0;
+  top: 150px;
   left: 0;
   flex-direction: column-reverse;
 }
