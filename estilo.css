@@ -153,7 +153,7 @@ dialog form{
 .input-field::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-.input-field:invalid{
+.input-field:invalid:focus{
  animation: shake 300ms; 
 }
  .ltbra {
@@ -167,7 +167,7 @@ dialog form{
   position: fixed;
   top: 150px;
   left: 0;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 .likesimg{
 width:150px;
