@@ -157,7 +157,7 @@ dialog[open] {
 }
  .ltbra {
   width: 150px;
-  height: calc(100vh-150px); 
+  height: calc(100vh - 150px); 
   background:transparent;
   border:2px solid white;
   display: flex;
@@ -191,14 +191,15 @@ dialog[open] {
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
 
   <dialog id="login" closedby="any">
+    <form method="dialog">
   <h3>Iniciar Sesión</h3>
-      <p>Mail</p>
+      <label>Mail</label>
     <input class="input-field" type="email"  required placeholder="escribe tu email" >
-      <p>Contraseña</p>
+      <label>Contraseña</label>
       <input class="input-field" type="password" required placeholder="tu contraseña">
     
   <button type="submit">enviar</button>
- 
+    </form>
 </dialog>
 
 <footer>
