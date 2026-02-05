@@ -165,3 +165,7 @@ dialog[open] {
   left: 0;
   flex-direction: column-reverse;
 }
+.likeimg{
+width:150px;
+height:150px;
+}
