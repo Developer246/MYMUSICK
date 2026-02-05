@@ -159,7 +159,6 @@ dialog form{
   width: 150px;
   height: calc(100vh - 150px); 
   background:transparent;
-  border:2px solid white;
   display: flex;
   align-items:center;
   justify-content: flex-start;
