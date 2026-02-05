@@ -123,7 +123,6 @@ dialog[open] {
 }
 dialog form{
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 20px;
 }
