@@ -159,6 +159,7 @@ dialog[open] {
   background:transparent;
   border:2px solid white;
   display: flex;
+  align-items:center;
   justify-content: flex-start;
   position: fixed;
   top: 0;
