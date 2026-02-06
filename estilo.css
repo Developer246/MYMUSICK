@@ -177,8 +177,8 @@ dialog[open] {
 .likesimg{
   width:130px;
   height:130px;
-  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
 }
 .likesimg:hover{
-   border-right-color: purple;
+   border-left-color: purple;
 }
