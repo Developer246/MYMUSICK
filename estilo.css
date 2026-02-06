@@ -126,6 +126,11 @@ dialog[open] {
   flex-direction: column;
   gap: 15px;
 }
+.login-form label{
+  display:flex;
+  justify-content:center;
+  font-family:'Gyanko';
+}
  .input-field {
   width: 80%;
   padding: 12px 15px;
