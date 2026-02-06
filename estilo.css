@@ -143,6 +143,8 @@ dialog[open] {
   color: white;
   font-size: 16px;
   outline: none;
+  display:flex;
+  justify-content:center;
 }
 @keyframes shake {
   0% { transform: translateX(0); }
