@@ -121,14 +121,10 @@ dialog {
 dialog[open] {
   animation: bigger  0.8s ease-out forwards;
 }
-dialog form{
+.login-form {
   display: flex;
-  justify-content:between;
-  gap: 20px;
-}
-.intex{
-  display:flex;
-  justify-content:center;
+  flex-direction: column;
+  gap: 15px;
 }
  .input-field {
   width: 80%;
