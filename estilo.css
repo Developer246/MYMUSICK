@@ -175,6 +175,9 @@ dialog[open] {
   flex-direction: column;
 }
 .likesimg{
-width:130px;
-height:130px;
+  width:130px;
+  height:130px;
+}
+.likesimg:hover{
+   border-bottom: 3px solid purple;
 }
