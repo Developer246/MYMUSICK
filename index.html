@@ -30,17 +30,20 @@
 </aside>
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
 
-  <dialog id="login" closedby="any">
-    <form method="dialog">
-  <h3 class="intex">Iniciar Sesión</h3>
-      <a>Mail</a>
-    <input class="input-field" type="email"  required placeholder="escribe tu email" >
-      <a>Contraseña</a>
-      <input class="input-field" type="password" required placeholder="tu contraseña">
-    
-  <button type="submit">enviar</button>
-    </form>
+ <dialog id="login" closedby="any">
+  <form method="dialog" class="login-form">
+    <h3 class="intex">Iniciar Sesión</h3>
+
+    <label for="email">Mail</label>
+    <input id="email" class="input-field" type="email" required placeholder="escribe tu email">
+
+    <label for="pass">Contraseña</label>
+    <input id="pass" class="input-field" type="password" required placeholder="tu contraseña">
+
+    <button type="submit" class="bttlg">Enviar</button>
+  </form>
 </dialog>
+
 
 <footer>
   <p style="margin:auto; color:white;">© 2026 MYMUSICK</p>
