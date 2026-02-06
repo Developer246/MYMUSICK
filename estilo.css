@@ -130,6 +130,7 @@ dialog[open] {
   display:flex;
   justify-content:center;
   font-family:'Gyanko';
+  interline:1.2;
 }
  .input-field {
   width: 80%;
