@@ -131,8 +131,11 @@ dialog[open] {
 .login-form h3 {
   display:flex;
   justify-content:center;
-  font-family:'Gyanko';
-  interline:1.2;
+  font-family: 'Gyanko', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-weight: normal; 
+  line-height: 1.2;
 }
  .input-field {
   width: 80%;
