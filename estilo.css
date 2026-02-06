@@ -133,7 +133,7 @@ dialog[open] {
   interline:1.2;
 }
 
-.2labels{
+.2label{
   display:flex;
   justify-content:center;
 }
