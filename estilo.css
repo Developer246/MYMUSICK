@@ -126,7 +126,7 @@ dialog[open] {
   flex-direction: column;
   gap: 15px;
 }
-.login-form label{
+.Maillb{
   display:flex;
   justify-content:center;
   font-family:'Gyanko';
