@@ -123,7 +123,7 @@ dialog[open] {
 }
 dialog form{
   display: flex;
-  align-items: center;
+  justify-content:between;
   gap: 20px;
 }
 .intex{
