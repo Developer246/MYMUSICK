@@ -125,14 +125,14 @@ dialog[open] {
   display: flex;
   flex-direction: column;
   gap: 15px;
-.login-form{
+}
+.login-form h3 {
   display:flex;
   justify-content:center;
   font-family:'Gyanko';
   interline:1.2;
-    
 }
-}
+
 .2labels{
   display:flex;
   justify-content:center;
