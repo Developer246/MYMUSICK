@@ -123,6 +123,7 @@ dialog[open] {
 }
 .login-form {
   display: flex;
+  justify-content:center;
   flex-direction: column;
   gap: 15px;
 }
@@ -131,11 +132,6 @@ dialog[open] {
   justify-content:center;
   font-family:'Gyanko';
   interline:1.2;
-}
-
-.labels {
-  display:flex;
-  justify-content:center;
 }
  .input-field {
   width: 80%;
