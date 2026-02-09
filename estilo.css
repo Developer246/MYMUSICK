@@ -89,6 +89,22 @@
   justify-content: center;
   align-items: center;
 }
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+  .title {
+    font-size: 28px;
+  }
+  .search {
+    width: 180px;
+  }
+  .bttlg {
+    width: 100px;
+  }
+}
 
 @keyframes bigger {
   0% {
