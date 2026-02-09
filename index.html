@@ -23,7 +23,7 @@
 
   <button class="bttlg" type="button" onclick="document.getElementById('login').showModal()">Iniciar Sesión</button>
 </header>
-<aside class="sidenav">
+<aside id="sidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="#">About</a>
   <a href="#">Services</a>
@@ -35,11 +35,11 @@
 
 <script>
 function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("sidenav").style.width = "250px";
 }
 
 function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("sidenav").style.width = "0";
 }
 </script>
   
