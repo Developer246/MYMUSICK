@@ -193,8 +193,14 @@ dialog[open] {
 }
 
 .sidenav a {
+  display: block;
+  padding: 12px 8px 12px 32px;
+  font-size: 22px;
+  font-family: 'Gyanko', sans-serif;
+  color: #818181;
+  text-decoration: none;
   border-left: 4px solid transparent;
-  transition: border-color 0.3s, color 0.3s;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
 }
 
 .sidenav a:hover {
