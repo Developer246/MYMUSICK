@@ -24,9 +24,25 @@
   <button class="bttlg" type="button" onclick="document.getElementById('login').showModal()">Iniciar Sesión</button>
 </header>
 <aside class="ltbra">
- <article> 
-   <img class="likesimg" src="img/likes.png" >
- </article>
+ <div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+</div>
+
+<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+</script>
 </aside>
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
 
@@ -46,7 +62,7 @@
 
 
 <footer>
-  <p style="margin:auto; color:white;">© 2026 MYMUSICK</p>
+  <p style="margin:auto; color:white;">No se reproduce nada</p>
 </footer>
 
 </body>
