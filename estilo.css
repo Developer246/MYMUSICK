@@ -196,7 +196,10 @@ dialog[open] {
 
 .sidebar p {
   position: relative;
-  color:white;
+  color: white;
+  width: 100%;
+  padding: 12px 20px;
+  cursor: pointer;
 }
 
 .sidebar p::before {
