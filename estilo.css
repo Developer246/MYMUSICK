@@ -181,6 +181,8 @@ dialog[open] {
 .sidebar {
   height: (100% - 150px);
   width: 160px;
+  display:flex;
+  aling-items:center;
   position: fixed;
   z-index: 1;
   top: 0;
