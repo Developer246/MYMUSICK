@@ -194,12 +194,12 @@ dialog[open] {
   padding-top: 16px;
 }
 
-.sidebar a {
+.sidebar p {
   position: relative;
   color:white;
 }
 
-.sidebar a::before {
+.sidebar p::before {
   content: "";
   position: absolute;
   left: 0;
@@ -211,7 +211,7 @@ dialog[open] {
   transition: transform 0.3s ease;
 }
 
-.sidebar a:hover::before {
+.sidebar p:hover::before {
   transform: scaleY(1);
 }
 
