@@ -179,13 +179,14 @@ dialog[open] {
  animation: shake 300ms; 
 }
 .sidebar {
-  height: (100% - 150px);
+  height: calc(100vh - 150px);
   width: 160px;
-  display:flex;
-  aling-items:center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   position: fixed;
   z-index: 1;
-  top: 0;
+  top: 150px; 
   left: 0;
   background-color: #111;
   overflow-x: hidden;
@@ -193,13 +194,22 @@ dialog[open] {
 }
 
 .sidebar a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 20px;
-  color: #818181;
-  display: block;
+  position: relative;
 }
 
-.sidebar a:hover {
-  color: #f1f1f1;
+.sidebar a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #FF5757;
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
+
+.sidebar a:hover::before {
+  transform: scaleY(1);
+}
+
