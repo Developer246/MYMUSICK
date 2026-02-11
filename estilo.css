@@ -216,9 +216,10 @@ dialog[open] {
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
-
+.sidebar p:hover{
+background-color: rgba(255, 255, 255, 0.05);
+}
 .sidebar p:hover::before {
-  background-color: rgba(255, 255, 255, 0.05);
   transform: scaleY(1);
 }
 
