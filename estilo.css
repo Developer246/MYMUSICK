@@ -179,7 +179,7 @@ dialog[open] {
  animation: shake 300ms; 
 }
 .sidebar {
-  height: calc(100vh - 150px - 80px); 
+  height: calc(100vh - 150px - 85px); 
   width: 160px;
   display: flex;
   align-items: center;
