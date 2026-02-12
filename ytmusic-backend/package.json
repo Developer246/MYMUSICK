@@ -1,0 +1,11 @@
+{
+  "name": "ytmusic-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ytmusic-api": "^4.2.0"
+  }
+}
