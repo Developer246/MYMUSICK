@@ -195,6 +195,8 @@ dialog[open] {
 
 
 .sidebar a {
+  font-family: 'Gyanko', sans-serif;
+  font-size: 27px;
   color:white;
   position: relative;
 }
