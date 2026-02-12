@@ -31,6 +31,57 @@
 </aside>
   
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
+  <div id="results"></div>
+<script>
+const input = document.querySelector(".search");
+const results = document.getElementById("results");
+
+input.addEventListener("keydown", async (e) => {
+  if (e.key !== "Enter") return;
+
+  const query = input.value.trim();
+  if (!query) return;
+
+  results.innerHTML = "Buscando... 🎶";
+
+  try {
+    const res = await fetch(
+      "https://mymusick-backend.onrender.com/search?q=" +
+      encodeURIComponent(query)
+    );
+
+    const songs = await res.json();
+    renderSongs(songs);
+  } catch (err) {
+    results.innerHTML = "Error al buscar 😢";
+    console.error(err);
+  }
+});
+
+function renderSongs(songs) {
+  results.innerHTML = "";
+
+  if (!songs.length) {
+    results.innerHTML = "No se encontraron canciones";
+    return;
+  }
+
+  songs.slice(0, 10).forEach(song => {
+    const div = document.createElement("div");
+    div.style.color = "white";
+    div.style.padding = "10px";
+    div.style.cursor = "pointer";
+
+    div.innerHTML = `
+      🎵 <strong>${song.name}</strong><br>
+      <small>${song.artist?.name || "Artista desconocido"}</small>
+    `;
+
+    results.appendChild(div);
+  });
+}
+</script>
+
 
  <dialog id="login" closedby="any">
   <form method="dialog" class="login-form">
