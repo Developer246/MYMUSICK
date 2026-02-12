@@ -179,32 +179,26 @@ dialog[open] {
  animation: shake 300ms; 
 }
 .sidebar {
-  height: calc(100vh - 150px);
+  height: calc(-100px + 100vh - 150px); 
   width: 160px;
   display: flex;
   align-items: center;
   flex-direction: column;
-  font-family:'Gyanko';
   position: fixed;
   z-index: 1;
-  top: 150px; 
+  top: 150px;
   left: 0;
   background-color: #111;
   overflow-x: hidden;
   padding-top: 16px;
 }
 
-.sidebar p {
+
+.sidebar a {
   position: relative;
-  display:flex;
-  justify-content:center;
-  color: white;
-  width: 100%;
-  padding: 12px 20px;
-  cursor: pointer;
 }
 
-.sidebar p::before {
+.sidebar a::before {
   content: "";
   position: absolute;
   left: 0;
@@ -212,14 +206,12 @@ dialog[open] {
   width: 4px;
   height: 100%;
   background: #FF5757;
-  transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
-.sidebar p:hover{
-background-color: rgba(255, 255, 255, 0.05);
-}
-.sidebar p:hover::before {
+
+.sidebar a:hover::before {
   transform: scaleY(1);
 }
+
 
