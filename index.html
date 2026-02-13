@@ -63,25 +63,25 @@ renderSongs(data.songs || data);
 function renderSongs(songs) {
   results.innerHTML = "";
 
-  if (!songs.length) {
+  if (!Array.isArray(songs) || songs.length === 0) {
     results.innerHTML = "No se encontraron canciones";
     return;
   }
 
   songs.slice(0, 10).forEach(song => {
     const div = document.createElement("div");
-    div.style.color = "white";
-    div.style.padding = "10px";
-    div.style.cursor = "pointer";
+    div.className = "song";
 
     div.innerHTML = `
-      🎵 <strong>${song.name}</strong><br>
-      <small>${song.artist?.name || "Artista desconocido"}</small>
+      <img src="${song.thumbnail}" width="120" style="border-radius:10px"><br>
+      🎵 <strong>${song.title}</strong><br>
+      <small>${song.artist}</small>
     `;
 
     results.appendChild(div);
   });
 }
+
 </script>
 
 
