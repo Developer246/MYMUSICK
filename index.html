@@ -76,12 +76,12 @@ function renderSongs(songs) {
       <small>${song.artist}</small>
     `;
 
-    div.onclick = () => {
-  const player = document.getElementById("ytplayer");
-  player.src = `https://www.youtube.com/embed/${song.id}?autoplay=1`;
+   div.onclick = () => {
+  const player = document.getElementById("audioPlayer");
+  player.src = `https://mymusick-backend.onrender.com/audio/${song.id}`;
+  player.play();
 };
-
-    results.appendChild(div);
+ results.appendChild(div);
   });
 }
 </script>
