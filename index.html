@@ -50,10 +50,8 @@ input.addEventListener("keydown", async (e) => {
       encodeURIComponent(query)
     );
 
-const data = await res.json();
-console.log(data); 
-renderSongs(data.songs || data);
-
+    const songs = await res.json();
+    renderSongs(songs);
   } catch (err) {
     results.innerHTML = "Error al buscar 😢";
     console.error(err);
@@ -68,21 +66,28 @@ function renderSongs(songs) {
     return;
   }
 
-  songs.slice(0, 10).forEach(song => {
+  songs.forEach(song => {
     const div = document.createElement("div");
     div.className = "song";
 
     div.innerHTML = `
-      <img src="${song.thumbnail}" width="120" style="border-radius:10px"><br>
+      <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
       🎵 <strong>${song.title}</strong><br>
       <small>${song.artist}</small>
     `;
 
+    div.onclick = () => {
+      window.open(
+        "https://www.youtube.com/watch?v=" + song.id,
+        "_blank"
+      );
+    };
+
     results.appendChild(div);
   });
 }
-
 </script>
+
 
 
  <dialog id="login" closedby="any">
