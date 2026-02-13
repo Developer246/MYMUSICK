@@ -50,8 +50,10 @@ input.addEventListener("keydown", async (e) => {
       encodeURIComponent(query)
     );
 
-    const songs = await res.json();
-    renderSongs(songs);
+const data = await res.json();
+console.log(data); 
+renderSongs(data.songs || data);
+
   } catch (err) {
     results.innerHTML = "Error al buscar 😢";
     console.error(err);
