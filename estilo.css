@@ -217,5 +217,19 @@ dialog[open] {
 .sidebar a:hover::before {
   transform: scaleY(1);
 }
+#results {
+  margin-left: 220px;
+  padding: 20px;
+}
 
+.song {
+  color: white;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.song:hover {
+  background: #1e1e1e;
+  border-radius: 12px;
+}
 
