@@ -179,7 +179,7 @@ dialog[open] {
  animation: shake 300ms; 
 }
 .sidebar {
-  height: calc(100vh - 150px - 85px); 
+  height: calc(100vh - 155px - 90px); 
   width: 160px;
   display: flex;
   align-items: center;
@@ -189,6 +189,8 @@ dialog[open] {
   z-index: 1;
   top: 150px;
   left: 0;
+  border: 1px solid transparent;
+  border-radius:15px;
   background-color: #111;
   overflow-x: hidden;
   padding-top: 16px;
