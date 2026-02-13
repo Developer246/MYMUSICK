@@ -219,9 +219,12 @@ dialog[open] {
 }
 #results {
   margin-left: 220px;
+  margin-top: 40px; 
   padding: 20px;
+  padding-bottom: 120px;
+  position: relative;
+  z-index: 2;
 }
-
 .song {
   color: white;
   margin-bottom: 20px;
