@@ -100,17 +100,16 @@ function renderSongs(songs) {
 </dialog>
   
 <footer class="player">
-  <button onclick="playSong()">▶️ Play</button>
-  <button onclick="pauseSong()">⏸️ Pause</button>
-
-  <!-- reproductor oculto -->
+  <button id="playPauseBtn" onclick="togglePlay()">▶️</button>
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
 let player;
 let currentVideoId = null;
+let isPlaying = false;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player("yt-player", {
@@ -126,27 +125,30 @@ function onYouTubeIframeAPIReady() {
 
 function loadSong(videoId) {
   currentVideoId = videoId;
+  isPlaying = true;
   player.loadVideoById(videoId);
+  updateButton();
 }
 
-function playSong() {
-  if (player && currentVideoId) {
-    player.playVideo();
-    element.style.display = "none";
-  }
-  else {
-    element.style.display = "block";
-  }
-}
+function togglePlay() {
+  if (!player || !currentVideoId) return;
 
-function pauseSong() {
-  if (player) {
+  if (isPlaying) {
     player.pauseVideo();
+    isPlaying = false;
+  } else {
+    player.playVideo();
+    isPlaying = true;
   }
+
+  updateButton();
+}
+
+function updateButton() {
+  const btn = document.getElementById("playPauseBtn");
+  btn.textContent = isPlaying ? "⏸️" : "▶️";
 }
 </script>
 
-
 </body>
 </html>
-
