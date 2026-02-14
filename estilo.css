@@ -16,6 +16,7 @@
       justify-content: space-around;
       align-items: center;
       background-color: #04CDA8;
+      z-index:5;
       height: 150px;
     }
 
