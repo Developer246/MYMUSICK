@@ -97,7 +97,7 @@ results.appendChild(div);
 </dialog>
   
 <footer class="player">
-  <button id="playPauseBtn">▶️</button>
+  <button id="playPauseBtn">▶︎</button>
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
@@ -152,7 +152,7 @@ function onPlayerStateChange(event) {
 
 function updateButton() {
   const btn = document.getElementById("playPauseBtn");
-  btn.textContent = isPlaying ? "⏸️" : "▶️";
+  btn.textContent = isPlaying ? "⏸" : "▶︎";
 }
 
 document.getElementById("playPauseBtn").onclick = togglePlayPause;
