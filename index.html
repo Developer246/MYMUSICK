@@ -77,12 +77,7 @@ function renderSongs(songs) {
     `;
 
   div.onclick = () => {
-  const ytPlayer = document.getElementById("ytPlayer");
-
-  ytPlayer.src =
-    `https://www.youtube.com/embed/${song.id}?autoplay=1`;
-
-  console.log("▶️ Reproduciendo:", song.title);
+  loadSong(song.id); // ID de YouTube
 };
 
  results.appendChild(div);
