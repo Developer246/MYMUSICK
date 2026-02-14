@@ -76,11 +76,15 @@ function renderSongs(songs) {
       <small>${song.artist}</small>
     `;
 
-   div.onclick = () => {
-  const player = document.getElementById("audioPlayer");
-  player.src = `https://mymusick-backend.onrender.com/audio/${song.id}`;
-  player.play();
+  div.onclick = () => {
+  const ytPlayer = document.getElementById("ytPlayer");
+
+  ytPlayer.src =
+    `https://www.youtube.com/embed/${song.id}?autoplay=1`;
+
+  console.log("▶️ Reproduciendo:", song.title);
 };
+
  results.appendChild(div);
   });
 }
