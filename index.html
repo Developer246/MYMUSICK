@@ -77,13 +77,9 @@ function renderSongs(songs) {
     `;
 
 div.onclick = () => {
-  audio.src = `https://mymusick-backend.onrender.com/audio/${song.id}`;
-  audio.play();
-  btn.textContent = "⏸";
+  loadSong(song.id);
 };
-
-
- results.appendChild(div);
+results.appendChild(div);
   });
 }
 </script>
@@ -107,7 +103,6 @@ div.onclick = () => {
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 let player;
