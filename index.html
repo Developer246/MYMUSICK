@@ -60,7 +60,7 @@ input.addEventListener("keydown", async (e) => {
 
 function renderSongs(songs) {
   results.innerHTML = "";
-
+console.log(song.title);
   if (!Array.isArray(songs) || songs.length === 0) {
     results.innerHTML = "No se encontraron canciones";
     return;
@@ -74,7 +74,6 @@ function renderSongs(songs) {
       <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
       🎵 <strong>${song.title}</strong><br>
       <small>${song.artist}</small>
-      console.log(song.title);
     `;
 
 div.onclick = () => {
