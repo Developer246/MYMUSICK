@@ -97,30 +97,32 @@ results.appendChild(div);
 </dialog>
   
 <footer class="player">
-<audio id="player"></audio>
-<button id="playBtn"></button>
+  <audio id="player"></audio>
+  <button id="playBtn">▶︎</button>
 </footer>
-  
-<script>
+
+  <script>
+const player = document.getElementById("player");
+const btn = document.getElementById("playBtn");
+
 const player = document.getElementById("player");
 const btn = document.getElementById("playBtn");
 
 function loadSong(id) {
   player.src = `https://mymusick-backend.onrender.com/audio/${id}`;
   player.play();
-  btn.textContent = "||";
+  btn.textContent = "⏸";
 }
 
 btn.onclick = () => {
   if (player.paused) {
     player.play();
-    btn.textContent = "||";
+    btn.textContent = "⏸";
   } else {
     player.pause();
     btn.textContent = "▶︎";
   }
 };
-
 </script>
 
 </body>
