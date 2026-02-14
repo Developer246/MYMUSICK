@@ -71,7 +71,7 @@ function renderSongs(songs) {
 
     div.innerHTML = `
       <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
-      🎵 <strong>${song}</strong><br>
+      🎵 <strong>${song.title}</strong><br>
       <small>${song.artist}</small>
     `;
 
@@ -97,32 +97,65 @@ results.appendChild(div);
 </dialog>
   
 <footer class="player">
-  <audio id="player"></audio>
-  <button id="playBtn">▶︎</button>
+  <button id="playPauseBtn">▶️</button>
+  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
-  <script>
-const player = document.getElementById("player");
-const btn = document.getElementById("playBtn");
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let player;
+let currentVideoId = null;
+let isPlaying = false;
 
-const player = document.getElementById("player");
-const btn = document.getElementById("playBtn");
-
-function loadSong(id) {
-  player.src = `https://mymusick-backend.onrender.com/audio/${id}`;
-  player.play();
-  btn.textContent = "⏸";
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("yt-player", {
+    height: "0",
+    width: "0",
+    videoId: "",
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      modestbranding: 1,
+      rel: 0
+    },
+    events: {
+      onStateChange: onPlayerStateChange
+    }
+  });
 }
 
-btn.onclick = () => {
-  if (player.paused) {
-    player.play();
-    btn.textContent = "⏸";
+function loadSong(videoId) {
+  currentVideoId = videoId;
+  player.loadVideoById(videoId);
+  isPlaying = true;
+  updateButton();
+}
+
+function togglePlayPause() {
+  if (!player || !currentVideoId) return;
+
+  if (isPlaying) {
+    player.pauseVideo();
   } else {
-    player.pause();
-    btn.textContent = "▶︎";
+    player.playVideo();
   }
-};
+}
+
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    isPlaying = true;
+  } else if (event.data === YT.PlayerState.PAUSED) {
+    isPlaying = false;
+  }
+  updateButton();
+}
+
+function updateButton() {
+  const btn = document.getElementById("playPauseBtn");
+  btn.textContent = isPlaying ? "⏸️" : "▶️";
+}
+
+document.getElementById("playPauseBtn").onclick = togglePlayPause;
 </script>
 
 </body>
