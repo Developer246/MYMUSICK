@@ -75,9 +75,8 @@ function renderSongs(songs) {
       <small>${song.artist}</small>
     `;
 
-div.onclick = () => {
-  loadSong(song.id);
-};
+div.onclick = () => loadSong(song.id);
+
 results.appendChild(div);
   });
 }
@@ -98,53 +97,30 @@ results.appendChild(div);
 </dialog>
   
 <footer class="player">
-  <button id="playPauseBtn" onclick="togglePlay()"></button>
-  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
+<audio id="player"></audio>
+<button id="playBtn"></button>
 </footer>
-
-<script src="https://www.youtube.com/iframe_api"></script>
+  
 <script>
-let player;
-let currentVideoId = null;
-let isPlaying = false;
+const player = document.getElementById("player");
+const btn = document.getElementById("playBtn");
 
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player("yt-player", {
-    height: "0",
-    width: "0",
-    videoId: "",
-    playerVars: {
-      autoplay: 0,
-      controls: 0
-    }
-  });
+function loadSong(id) {
+  player.src = `https://mymusick-backend.onrender.com/audio/${id}`;
+  player.play();
+  btn.textContent = "⏸️";
 }
 
-function loadSong(videoId) {
-  currentVideoId = videoId;
-  isPlaying = true;
-  player.loadVideoById(videoId);
-  updateButton();
-}
-
-function togglePlay() {
-  if (!player || !currentVideoId) return;
-
-  if (isPlaying) {
-    player.pauseVideo();
-    isPlaying = false;
+btn.onclick = () => {
+  if (player.paused) {
+    player.play();
+    btn.textContent = "⏸️";
   } else {
-    player.playVideo();
-    isPlaying = true;
+    player.pause();
+    btn.textContent = "▶️";
   }
+};
 
-  updateButton();
-}
-
-function updateButton() {
-  const btn = document.getElementById("playPauseBtn");
-  btn.textContent = isPlaying ? "||" : "▶︎";
-}
 </script>
 
 </body>
