@@ -108,16 +108,16 @@ const btn = document.getElementById("playBtn");
 function loadSong(id) {
   player.src = `https://mymusick-backend.onrender.com/audio/${id}`;
   player.play();
-  btn.textContent = "⏸️";
+  btn.textContent = "||";
 }
 
 btn.onclick = () => {
   if (player.paused) {
     player.play();
-    btn.textContent = "⏸️";
+    btn.textContent = "||";
   } else {
     player.pause();
-    btn.textContent = "▶️";
+    btn.textContent = "▶︎";
   }
 };
 
