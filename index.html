@@ -60,7 +60,6 @@ input.addEventListener("keydown", async (e) => {
 
 function renderSongs(songs) {
   results.innerHTML = "";
-console.log(song.title);
   if (!Array.isArray(songs) || songs.length === 0) {
     results.innerHTML = "No se encontraron canciones";
     return;
@@ -81,6 +80,7 @@ div.onclick = () => {
 };
 results.appendChild(div);
   });
+  console.log(song.title);
 }
 </script>
 
