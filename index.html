@@ -104,16 +104,49 @@ function renderSongs(songs) {
   </form>
 </dialog>
   
-<footer>
-<iframe
-  id="ytPlayer"
-  width="0"
-  height="0"
-  src=""
-  frameborder="0"
-  allow="autoplay"
-></iframe>
+<footer class="player">
+  <button onclick="playSong()">▶️ Play</button>
+  <button onclick="pauseSong()">⏸️ Pause</button>
+
+  <!-- reproductor oculto -->
+  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let player;
+let currentVideoId = null;
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("yt-player", {
+    height: "0",
+    width: "0",
+    videoId: "",
+    playerVars: {
+      autoplay: 0,
+      controls: 0
+    }
+  });
+}
+
+function loadSong(videoId) {
+  currentVideoId = videoId;
+  player.loadVideoById(videoId);
+}
+
+function playSong() {
+  if (player && currentVideoId) {
+    player.playVideo();
+  }
+}
+
+function pauseSong() {
+  if (player) {
+    player.pauseVideo();
+  }
+}
+</script>
+
 
 </body>
 </html>
