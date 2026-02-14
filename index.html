@@ -76,9 +76,12 @@ function renderSongs(songs) {
       <small>${song.artist}</small>
     `;
 
-  div.onclick = () => {
-  loadSong(song.id); // ID de YouTube
+div.onclick = () => {
+  audio.src = `https://mymusick-backend.onrender.com/audio/${song.id}`;
+  audio.play();
+  btn.textContent = "⏸";
 };
+
 
  results.appendChild(div);
   });
