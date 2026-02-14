@@ -132,6 +132,10 @@ function loadSong(videoId) {
 function playSong() {
   if (player && currentVideoId) {
     player.playVideo();
+    element.style.display = "none";
+  }
+  else {
+    element.style.display = "block";
   }
 }
 
