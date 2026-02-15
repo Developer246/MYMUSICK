@@ -24,10 +24,10 @@
   <button class="bttlg" type="button" onclick="document.getElementById('login').showModal()">Iniciar Sesión</button>
 </header>
 <aside class="sidebar">
- <a href="#home"><i class="fa fa-fw fa-home"></i> Home</a>
-  <a href="#services"><i class="fa fa-fw fa-wrench"></i> Services</a>
-  <a href="#clients"><i class="fa fa-fw fa-user"></i> Clients</a>
-  <a href="#contact"><i class="fa fa-fw fa-envelope"></i> Contact</a>
+ <a href="#home">Inicio</a>
+  <a href="#services">Seguido</a>
+  <a href="#clients">Me gusta</a>
+  <a href="#contact">descargas</a>
 </aside>
   
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
@@ -70,10 +70,12 @@ function renderSongs(songs) {
     div.className = "song";
 
     div.innerHTML = `
-      <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
-      🎵 <strong>${song.title}</strong><br>
-      <small>${song.artist}</small>
-    `;
+  <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
+  🎵 <strong>${song.title}</strong><br>
+  <small>${song.artist}</small><br>
+  <a href="${song.url}" download="${song.title}.mp3">⬇️ Descargar</a>
+`;
+
 
 div.onclick = () => loadSong(song.id);
 
