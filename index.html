@@ -5,8 +5,6 @@
   <title>MYMUSICK</title>
   <link rel="icon" href="img/Logo.png">
   <link rel="stylesheet" href="estilo.css">
-
-    
 </head>
 
 <body>
@@ -21,18 +19,48 @@
     <input class="search" type="search" placeholder="Busca tu Música 🎵">
   </div>
 
-  <button class="bttlg" type="button" onclick="document.getElementById('login').showModal()">Iniciar Sesión</button>
+  <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
 </header>
+
 <aside class="sidebar">
- <a href="#home">Inicio</a>
-  <a href="#services">Seguido</a>
-  <a href="#clients">Me gusta</a>
-  <a href="#contact">descargas</a>
+  <a href="#">Inicio</a>
+  <a href="#">Seguidos</a>
+  <a href="#">Me gusta</a>
+  <a href="#">Descargas</a>
 </aside>
-  
+
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
-  <div id="results"></div>
+
+<div id="results"></div>
+
+<footer class="player">
+  <span id="nowPlaying">Nada reproduciéndose</span>
+  <button id="playPauseBtn">▶︎</button>
+  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
+</footer>
+
+<!-- LOGIN -->
+<dialog id="login">
+  <form method="dialog" class="login-form">
+    <h3 class="intex">Iniciar Sesión</h3>
+
+    <label class="labels">Mail</label>
+    <input class="input-field" type="email" required>
+
+    <label class="labels">Contraseña</label>
+    <input class="input-field" type="password" required>
+
+    <button class="bttlg">Enviar</button>
+  </form>
+</dialog>
+
+<!-- YOUTUBE API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
+/* =========================
+   BUSCADOR
+========================= */
 const input = document.querySelector(".search");
 const results = document.getElementById("results");
 
@@ -49,19 +77,18 @@ input.addEventListener("keydown", async (e) => {
       "https://mymusick-backend.onrender.com/search?q=" +
       encodeURIComponent(query)
     );
-
     const songs = await res.json();
     renderSongs(songs);
-  } catch (err) {
+  } catch {
     results.innerHTML = "Error al buscar 😢";
-    console.error(err);
   }
 });
 
 function renderSongs(songs) {
   results.innerHTML = "";
-  if (!Array.isArray(songs) || songs.length === 0) {
-    results.innerHTML = "No se encontraron canciones";
+
+  if (!songs?.length) {
+    results.textContent = "No se encontraron canciones";
     return;
   }
 
@@ -70,55 +97,36 @@ function renderSongs(songs) {
     div.className = "song";
 
     div.innerHTML = `
-  <img src="${song.thumbnail}" width="120" style="border-radius:12px"><br>
-  🎵 <strong>${song.title}</strong><br>
-  <small>${song.artist}</small><br>
-  <a href="${song.url}" download="${song.title}.mp3">⬇️ Descargar</a>
-`;
+      <img src="${song.thumbnail}" width="120" loading="lazy">
+      <strong>${song.title}</strong>
+      <small>${song.artist}</small>
+      <a href="${song.url}" download="${song.title}.mp3">⬇️ Descargar</a>
+    `;
 
+    div.addEventListener("click", (e) => {
+      if (e.target.tagName === "A") return;
+      loadSong(song);
+    });
 
-div.onclick = () => loadSong(song.id);
-
-results.appendChild(div);
+    results.appendChild(div);
   });
 }
-</script>
 
-  <dialog id="login" closedby="any">
-  <form method="dialog" class="login-form">
-    <h3 class="intex">Iniciar Sesión</h3>
-
-    <label for="email" class="labels">Mail</label>
-    <input id="email" class="input-field" type="email" required placeholder="Escribe tu Email">
-
-    <label for="pass" class="labels">Contraseña</label>
-    <input id="pass" class="input-field" type="password" required placeholder="Tu Contraseña">
-
-    <button type="submit" class="bttlg">Enviar</button>
-  </form>
-</dialog>
-  
-<footer class="player">
-  <button id="playPauseBtn">▶︎</button>
-  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
-</footer>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
+/* =========================
+   YOUTUBE PLAYER
+========================= */
 let player;
-let currentVideoId = null;
+let currentSong = null;
 let isPlaying = false;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player("yt-player", {
     height: "0",
     width: "0",
-    videoId: "",
     playerVars: {
-      autoplay: 0,
       controls: 0,
-      modestbranding: 1,
-      rel: 0
+      rel: 0,
+      modestbranding: 1
     },
     events: {
       onStateChange: onPlayerStateChange
@@ -126,35 +134,33 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-function loadSong(videoId) {
-  currentVideoId = videoId;
-  player.loadVideoById(videoId);
-  isPlaying = true;
+function loadSong(song) {
+  if (!player) return;
+
+  currentSong = song;
+  player.cueVideoById(song.id);
+
+  document.getElementById("nowPlaying").textContent =
+    `🎶 ${song.title} – ${song.artist}`;
+
+  isPlaying = false;
   updateButton();
 }
 
 function togglePlayPause() {
-  if (!player || !currentVideoId) return;
+  if (!player || !currentSong) return;
 
-  if (isPlaying) {
-    player.pauseVideo();
-  } else {
-    player.playVideo();
-  }
+  isPlaying ? player.pauseVideo() : player.playVideo();
 }
 
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
-    isPlaying = true;
-  } else if (event.data === YT.PlayerState.PAUSED) {
-    isPlaying = false;
-  }
+function onPlayerStateChange(e) {
+  isPlaying = e.data === YT.PlayerState.PLAYING;
   updateButton();
 }
 
 function updateButton() {
-  const btn = document.getElementById("playPauseBtn");
-  btn.textContent = isPlaying ? "⏸" : "▶︎";
+  document.getElementById("playPauseBtn").textContent =
+    isPlaying ? "⏸" : "▶︎";
 }
 
 document.getElementById("playPauseBtn").onclick = togglePlayPause;
