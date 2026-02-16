@@ -263,4 +263,7 @@ dialog[open] {
   background: #FF5757;
   color: black;
 }
-
+.input-field div{
+    display:flex;
+    flex-direction:row;
+}
