@@ -23,10 +23,18 @@
 </header>
 
 <aside class="sidebar">
-  <a href="#">Inicio</a>
-  <a href="#">Seguidos</a>
-  <a href="#">Me gusta</a>
-  <a href="#">Descargas</a>
+ <div class="iconsdbar">
+     <a href="#inicio">🏠</a>
+     <a href="#seguido">#</a>
+     <a href="#megusta">👍</a>
+     <a href="#Descargados">⚡️</a>
+ </div>
+ <div class="textsdbar">
+   <a href="#inicio">Inicio</a>
+   <a href="#seguido">Seguidos</a>
+   <a href="#megusta">Me gusta</a>
+   <a href="#Descargados">Descargas</a>
+ </div>
 </aside>
 
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
@@ -39,28 +47,26 @@
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
-<!-- LOGIN -->
 <dialog id="login">
   <form method="dialog" class="login-form">
     <h3 class="intex">Iniciar Sesión</h3>
 
     <label class="labels">Mail</label>
-    <input class="input-field" type="email" required>
+    <input class="input-field" placeholder="E-Mail" type="email" required>
 
     <label class="labels">Contraseña</label>
-    <input class="input-field" type="password" required>
-
-    <button class="bttlg">Enviar</button>
+    <input class="input-field" placeholder="Contraseña" type="password" required>
+    <button class="bttlg">Iniciar Sesión</button>
+    <div>
+    <p> Aún no tienes cuenta </p><a href="registrate">Registrate</a>
+    </div>
   </form>
 </dialog>
 
-<!-- YOUTUBE API -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-/* =========================
-   BUSCADOR
-========================= */
+
 const input = document.querySelector(".search");
 const results = document.getElementById("results");
 
@@ -70,7 +76,7 @@ input.addEventListener("keydown", async (e) => {
   const query = input.value.trim();
   if (!query) return;
 
-  results.innerHTML = "Buscando... 🎶";
+  results.innerHTML = `<p class="mtpt">Buscando... 🎶</p>`;
 
   try {
     const res = await fetch(
@@ -80,7 +86,8 @@ input.addEventListener("keydown", async (e) => {
     const songs = await res.json();
     renderSongs(songs);
   } catch {
-    results.innerHTML = "Error al buscar 😢";
+    results.innerHTML = `<p class="mtpt">"Error al buscar 😢"</p>`;
+    
   }
 });
 
@@ -100,7 +107,9 @@ function renderSongs(songs) {
       <img src="${song.thumbnail}" width="120" loading="lazy">
       <strong>${song.title}</strong>
       <small>${song.artist}</small>
-      <a href="${song.url}" download="${song.title}.mp3">⬇️ Descargar</a>
+      <a href="https://mymusick-backend.onrender.com/download/${song.url}">
+    ⬇️ Descargar
+    </a>
     `;
 
     div.addEventListener("click", (e) => {
@@ -112,9 +121,6 @@ function renderSongs(songs) {
   });
 }
 
-/* =========================
-   YOUTUBE PLAYER
-========================= */
 let player;
 let currentSong = null;
 let isPlaying = false;
