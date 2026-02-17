@@ -190,7 +190,10 @@ dialog::backdrop {
 .input-field:invalid:focus {
   animation: shake 300ms;
 }
-
+#login div{
+  display:flex;
+  flex-direction:row;
+}
 #results {
   margin-left: 200px;
   padding: 20px;
@@ -257,6 +260,9 @@ footer {
 .player button:hover {
   background: #FF5757;
   color: black;
+}
+.mtpt{
+  color:white;
 }
 
 @media (max-width: 600px) {
