@@ -53,7 +53,30 @@
 
     <label class="labels">Mail</label>
     <input class="input-field" placeholder="E-Mail" type="email" required>
+<div id="list" style="display:none">
+<ol>
+<li>megusta</li>
+<li>descargar</li>
+</ol>
+</div>
 
+<script>
+    const song = document.getElementById('song');
+    const list = document.getElementById('list');
+
+    area.addEventListener('contextmenu', function(song) {
+        event.preventDefault(); 
+
+        list.style.display = "block";
+        list.style.position = "absolute";
+        list.style.left = event.pageX + "px";
+        list.style.top = event.pageY + "px";
+    });
+
+    document.addEventListener('click', function() {
+        list.style.display = "none";
+    });
+</script>
     <label class="labels">Contraseña</label>
     <input class="input-field" placeholder="Contraseña" type="password" required>
     <button class="bttlg">Iniciar Sesión</button>
