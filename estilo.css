@@ -225,7 +225,7 @@ dialog[open] {
   padding: 20px;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 20px;
 
   overflow-x: auto;      
@@ -237,6 +237,8 @@ dialog[open] {
   color: white;
   margin-bottom: 20px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .song:hover {
