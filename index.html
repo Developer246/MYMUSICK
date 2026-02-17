@@ -43,7 +43,7 @@
 
 <footer class="player">
   <span id="nowPlaying">Nada reproduciéndose</span>
-  <button id="playPauseBtn">▶︎</button>
+  <button id="playPauseBtn" style="display:none"></button>
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
 
@@ -145,8 +145,7 @@ function loadSong(song) {
 
   document.getElementById("nowPlaying").textContent =
     `🎶 ${song.title}`;
-  document.getElemetById("playPauseBtn").innerHTML=
-    `<style>display:block</style>`;
+ document.getElementById("playPauseBtn").style.display = "inline-block";
 
   isPlaying = true;
   updateButton();
