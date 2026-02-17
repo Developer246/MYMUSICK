@@ -132,7 +132,7 @@ dialog {
 }
 
 dialog[open] {
-  animation: dialogIn 0.6s ease-out forwards;
+  animation: dialogIn 0.3s ease-out forwards;
 }
 
 dialog::backdrop {
