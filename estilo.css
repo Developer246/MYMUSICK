@@ -149,7 +149,6 @@ dialog::backdrop {
   }
 }
 
-/* ===== FORM LOGIN ===== */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -164,7 +163,6 @@ dialog::backdrop {
   color: #FF5757;
 }
 
-/* Inputs */
 .input-field {
   width: 85%;
   padding: 12px 15px;
