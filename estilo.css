@@ -263,7 +263,7 @@ dialog[open] {
   background: #FF5757;
   color: black;
 }
-.input-field div{
+.login div{
     display:flex;
     flex-direction:row;
 }
