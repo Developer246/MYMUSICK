@@ -44,14 +44,15 @@ header {
   color: #FF5757;
 }
 
-.search {
-  width: 250px;
-  padding: 12px 15px;
-  border-radius: 20px;
-  border: 2px solid #FF5757;
-  background-color: black;
-  color: white;
-  outline: none;
+.search { 
+    width: 250px; 
+    padding: 12px 15px; 
+    border-radius: 20px; 
+    border: 2px solid #FF5757; 
+    outline: none; 
+    font-size: 16px; 
+    background-color: black; 
+    color: white; 
 }
 
 .bttlg {
