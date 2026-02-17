@@ -141,12 +141,14 @@ function loadSong(song) {
   if (!player) return;
 
   currentSong = song;
-  player.cueVideoById(song.id);
+  player.loadVideoById(song.id);
 
   document.getElementById("nowPlaying").textContent =
-    `🎶 ${song.title} – ${song.artist}`;
+    `🎶 ${song.title}`;
+  document.getElemetById("playPauseBtn").innerHTML=
+    `<style>display:block</style>`;
 
-  isPlaying = false;
+  isPlaying = true;
   updateButton();
 }
 
