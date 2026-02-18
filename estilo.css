@@ -264,7 +264,6 @@ footer {
   background: #1d1d1d;
   border: 1px solid #333;
   padding: 10px;
-  box-shadow: 2px 2px 6px ;
   position: absolute;
   z-index: 1000;
   display:flex;
@@ -272,6 +271,10 @@ footer {
 }
 #list a{
  color:white;
+}
+#register{
+    width:500px;
+    height:448.5px;
 }
 @media (max-width: 600px) {
   header {
