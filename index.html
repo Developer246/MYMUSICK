@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +7,6 @@
   <link rel="icon" href="img/Logo.png">
   <link rel="stylesheet" href="estilo.css">
 </head>
-
 <body>
 
 <header>
@@ -46,6 +46,10 @@
   <button id="playPauseBtn" style="display:none"></button>
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
+<div id="list" style="display:none">
+<a href=# >megusta</a>
+<a>descargar</a>
+</div>
 
 <dialog id="login" closedby="any">
   <form method="dialog" class="login-form">
@@ -53,12 +57,6 @@
 
     <label class="labels">Mail</label>
     <input class="input-field" placeholder="E-Mail" type="email" required>
-<div id="list" style="display:none">
-<ol>
-<li>megusta</li>
-<li>descargar</li>
-</ol>
-</div>
 
 <script>
     const song = document.getElementById('song');
@@ -81,10 +79,27 @@
     <input class="input-field" placeholder="Contraseña" type="password" required>
     <button class="bttlg">Iniciar Sesión</button>
     <div>
-    <p> Aún no tienes cuenta </p><a href="registrate">Registrate</a>
+    <p> Aún no tienes cuenta </p><a href="#registrate" onclick="register.showModal()">Registrate</a>
     </div>
   </form>
 </dialog>
+
+<dialog id="register" closedby="any">
+  <form method="dialog" class="login-form">
+    <h3 class="intex">register</h3>
+
+    <label class="labels">Nombre de usuario</label>
+    <input class="input-field" placeholder="nombre de usuario" type="text" required>
+
+    <label class="labels">Contraseña</label>
+    <input class="input-field" placeholder="Contraseña" type="password" required>
+    <button class="bttlg">Iniciar Sesión</button>
+    <div>
+    <p> ¿Ya tienes cuenta?</p><a href="#login" onclick="register.closeModal()">Iniciar sesion</a>
+    </div>
+  </form>
+</dialog>
+
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -132,14 +147,30 @@ function renderSongs(songs) {
       <small>${song.artist}</small>
     `;
 
+    // Clic izquierdo → reproducir
     div.addEventListener("click", (e) => {
       if (e.target.tagName === "A") return;
       loadSong(song);
     });
 
+    // Clic derecho → menú contextual
+    div.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      list.style.display = "block";
+      list.style.position = "absolute";
+      list.style.left = event.pageX + "px";
+      list.style.top = event.pageY + "px";
+    });
+
     results.appendChild(div);
   });
 }
+
+// Ocultar menú al hacer clic fuera
+document.addEventListener("click", () => {
+  list.style.display = "none";
+});
+
 
 let player;
 let currentSong = null;
@@ -167,7 +198,7 @@ function loadSong(song) {
   player.loadVideoById(song.id);
 
   document.getElementById("nowPlaying").textContent =
-    `🎶 ${song.title}`;
+    ` `;
  document.getElementById("playPauseBtn").style.display = "inline-block";
 
   isPlaying = true;
