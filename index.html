@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,6 +17,11 @@
   <div class="ctsearch">
     <input class="search" onclick="historial()" type="search" placeholder="Busca tu Música 🎵">
   </div>
+  <script>
+  <div id="historial" style="display:none">
+    document.addEventListener('click', function() {
+        list.style.display = "none";
+  </script>
 
   <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
 </header>
@@ -57,7 +61,15 @@
 
     <label class="labels">Mail</label>
     <input class="input-field" placeholder="E-Mail" type="email" required>
-
+    <label class="labels">Contraseña</label>
+    <input class="input-field" placeholder="Contraseña" type="password" required>
+    <button class="bttlg">Iniciar Sesión</button>
+    <div>
+    <p> Aún no tienes cuenta </p><a href="#registrate" onclick="register.showModal()">Registrate</a>
+    </div>
+  </form>
+</dialog>
+  
 <script>
     const song = document.getElementById('song');
     const list = document.getElementById('list');
@@ -75,15 +87,7 @@
         list.style.display = "none";
     });
 </script>
-    <label class="labels">Contraseña</label>
-    <input class="input-field" placeholder="Contraseña" type="password" required>
-    <button class="bttlg">Iniciar Sesión</button>
-    <div>
-    <p> Aún no tienes cuenta </p><a href="#registrate" onclick="register.showModal()">Registrate</a>
-    </div>
-  </form>
-</dialog>
-
+  
 <dialog id="register" closedby="any">
   <form method="dialog" class="login-form">
     <h3 class="intex">register</h3>
@@ -95,7 +99,7 @@
     <input class="input-field" placeholder="Contraseña" type="password" required>
     <button class="bttlg">Iniciar Sesión</button>
     <div>
-    <p> ¿Ya tienes cuenta?</p><a href="#login" onclick="register.closeModal()">Iniciar sesion</a>
+    <p> ¿Ya tienes cuenta?</p><a href="#login" onclick="register.close()">Iniciar sesion</a>
     </div>
   </form>
 </dialog>
