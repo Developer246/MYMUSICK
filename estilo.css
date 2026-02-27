@@ -84,7 +84,6 @@ header {
   top: 150px;
   left: 0;
   width: 170px;
-  height: calc(100vh - 150px - 80px);
   background-color: #111;
   border-radius: 15px;
   display: flex;
