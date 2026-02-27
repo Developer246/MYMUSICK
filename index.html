@@ -20,8 +20,7 @@
   
   <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
 </header>
-<h2 id="rsbusqueda" style="display:none">Resultados de tu busqueda</h2>
-<h2 id="songsection" style="display:none">
+<h2 id="songsection" style="display:none">Sección de Canciones</h2>
 <aside class="sidebar">
  <div class="iconsdbar">
      <a href="#inicio">🏠</a>
@@ -71,13 +70,13 @@
     const list = document.getElementById('list');
 
     area.addEventListener('contextmenu', function(song) {
-        event.preventDefault(); 
+    event.preventDefault(); 
+    list.style.display = "block";
+    list.style.position = "absolute";
+    list.style.left = event.pageX + "px";
+    list.style.top = event.pageY + "px";
+});
 
-        list.style.display = "block";
-        list.style.position = "absolute";
-        list.style.left = event.pageX + "px";
-        list.style.top = event.pageY + "px";
-    });
 
     document.addEventListener('click', function() {
         list.style.display = "none";
