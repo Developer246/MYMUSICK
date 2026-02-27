@@ -1,9 +1,9 @@
-    @font-face {
-      font-family: 'Gyanko';
-      src: url("fonts/gyanko-regular.otf") format("opentype");
-      font-weight: normal;
-      font-style: normal;
-    }
+@font-face {
+  font-family: 'Gyanko';
+  src: url("fonts/gyanko-regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
 
 * {
   box-sizing: border-box;
@@ -45,14 +45,14 @@ header {
 }
 
 .search { 
-    width: 250px; 
-    padding: 12px 15px; 
-    border-radius: 20px; 
-    border: 2px solid #FF5757; 
-    outline: none; 
-    font-size: 16px; 
-    background-color: black; 
-    color: white; 
+  width: 250px; 
+  padding: 12px 15px; 
+  border-radius: 20px; 
+  border: 2px solid #FF5757; 
+  outline: none; 
+  font-size: 16px; 
+  background-color: black; 
+  color: white; 
 }
 
 .bttlg {
@@ -185,10 +185,12 @@ dialog[open] {
 .input-field:invalid:focus {
   animation: shake 300ms;
 }
+
 #login div{
   display:flex;
   flex-direction:row;
 }
+
 #results {
   margin-left: 200px;
   padding: 20px;
@@ -256,9 +258,11 @@ footer {
   background: #FF5757;
   color: black;
 }
+
 .mtpt{
   color:white;
 }
+
 #list {
   background: #1d1d1d;
   border: 1px solid #333;
@@ -268,13 +272,16 @@ footer {
   display:flex;
   flex-direction:column;
 }
+
 #list a{
  color:white;
 }
+
 #register{
-    width:500px;
-    height:448.5px;
+  width:500px;
+  height:448.5px;
 }
+
 @media (max-width: 600px) {
   header {
     flex-direction: column;
