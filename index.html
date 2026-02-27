@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>MYMUSICK</title>
-  <link rel="icon" href="img/Logo.png">
-  <link rel="stylesheet" href="estilo.css">
+<meta charset="UTF-8">
+<title>MYMUSICK</title>
+<link rel="icon" href="img/Logo.png">
+<link rel="stylesheet" href="estilo.css">
+  
 </head>
+
 <body>
 
 <header>
@@ -20,7 +22,7 @@
   
   <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
 </header>
-<h2 id="songsection" style="display:none">Sección de Canciones</h2>
+
 <aside class="sidebar">
  <div class="iconsdbar">
      <a href="#inicio">🏠</a>
@@ -45,60 +47,13 @@
   <button id="playPauseBtn" style="display:none"></button>
   <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
 </footer>
-<div id="list" style="display:none">
-<a href=# >megusta</a>
-<a href=#>descargar</a>
+
+<div id="list" style="display:none;position:absolute;background:black;padding:10px;border:1px solid #333;">
+<a href="#">Me gusta</a><br>
+<a href="#">Descargar</a>
 </div>
 
-<dialog id="login" closedby="any">
-  <form method="dialog" class="login-form">
-    <h3 class="intex">Iniciar Sesión</h3>
-
-    <label class="labels">Mail</label>
-    <input class="input-field" placeholder="E-Mail" type="email" required>
-    <label class="labels">Contraseña</label>
-    <input class="input-field" placeholder="Contraseña" type="password" required>
-    <button class="bttlg">Iniciar Sesión</button>
-    <div>
-    <p> Aún no tienes cuenta </p><a href="#registrate" onclick="register.showModal()">Registrate</a>
-    </div>
-  </form>
-</dialog>
-  
-<script>
-    const song = document.getElementById('song');
-    const list = document.getElementById('list');
-
-    area.addEventListener('contextmenu', function(song) {
-    event.preventDefault(); 
-    list.style.display = "block";
-    list.style.position = "absolute";
-    list.style.left = event.pageX + "px";
-    list.style.top = event.pageY + "px";
-});
-
-
-    document.addEventListener('click', function() {
-        list.style.display = "none";
-    });
-</script>
-  
-<dialog id="register" closedby="any">
-  <form method="dialog" class="login-form">
-    <h3 class="intex">register</h3>
-
-    <label class="labels">Nombre de usuario</label>
-    <input class="input-field" placeholder="nombre de usuario" type="text" required>
-
-    <label class="labels">Contraseña</label>
-    <input class="input-field" placeholder="Contraseña" type="password" required>
-    <button class="bttlg">Iniciar Sesión</button>
-    <div>
-    <p> ¿Ya tienes cuenta?</p><a href="#login" onclick="register.close()">Iniciar sesion</a>
-    </div>
-  </form>
-</dialog>
-
+<canvas id="canvas"></canvas>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -106,6 +61,9 @@
 
 const input = document.querySelector(".search");
 const results = document.getElementById("results");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
 
 input.addEventListener("keydown", async (e) => {
   if (e.key !== "Enter") return;
@@ -113,7 +71,7 @@ input.addEventListener("keydown", async (e) => {
   const query = input.value.trim();
   if (!query) return;
 
-  results.innerHTML = `<p class="mtpt">Buscando... 🎶</p>`;
+  results.innerHTML = `<p>Buscando... 🎶</p>`;
 
   try {
     const res = await fetch(
@@ -123,10 +81,10 @@ input.addEventListener("keydown", async (e) => {
     const songs = await res.json();
     renderSongs(songs);
   } catch {
-    results.innerHTML = `<p class="mtpt">"Error al buscar 😢"</p>`;
-    
+    results.innerHTML = `<p>Error al buscar 😢</p>`;
   }
 });
+
 
 function renderSongs(songs) {
   results.innerHTML = "";
@@ -141,83 +99,77 @@ function renderSongs(songs) {
     div.className = "song";
 
     div.innerHTML = `
-      <img src="${song.thumbnail}" width="120" loading="lazy">
+      <img src="${song.thumbnail}" width="120" loading="lazy" crossorigin="anonymous">
       <strong>${song.title}</strong>
       <small>${song.artist}</small>
     `;
 
-    div.addEventListener("click", (e) => {
-      if (e.target.tagName === "A") return;
-      loadSong(song);
+    div.addEventListener("mouseenter", () => {
+      detectarColor(song.thumbnail, div);
     });
 
-    div.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-      list.style.display = "block";
-      list.style.position = "absolute";
-      list.style.left = event.pageX + "px";
-      list.style.top = event.pageY + "px";
+    div.addEventListener("mouseleave", () => {
+      div.style.background = "";
+    });
+
+    div.addEventListener("click", () => {
+      loadSong(song);
     });
 
     results.appendChild(div);
   });
 }
 
-document.addEventListener("click", () => {
-  list.style.display = "none";
-});
+function detectarColor(imgURL, element){
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imgURL;
 
+  img.onload = function(){
+    canvas.width = img.width / 4;
+    canvas.height = img.height / 4;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    const colorCount = {};
+    let max = 0;
+    let dominant = "0,0,0";
+
+    for(let i=0;i<data.length;i+=16){
+      const r = data[i];
+      const g = data[i+1];
+      const b = data[i+2];
+
+      if(r+g+b < 60 || r+g+b > 720) continue;
+
+      const rgb = `${r},${g},${b}`;
+      colorCount[rgb] = (colorCount[rgb] || 0) + 1;
+
+      if(colorCount[rgb] > max){
+        max = colorCount[rgb];
+        dominant = rgb;
+      }
+    }
+
+    element.style.background = `rgba(${dominant},0.35)`;
+  };
+}
 
 let player;
-let currentSong = null;
-let isPlaying = false;
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player("yt-player", {
     height: "0",
-    width: "0",
-    playerVars: {
-      controls: 0,
-      rel: 0,
-      modestbranding: 1
-    },
-    events: {
-      onStateChange: onPlayerStateChange
-    }
+    width: "0"
   });
 }
 
 function loadSong(song) {
   if (!player) return;
-
-  currentSong = song;
   player.loadVideoById(song.id);
-
-  document.getElementById("nowPlaying").textContent =
-    ` `;
- document.getElementById("playPauseBtn").style.display = "inline-block";
-
-  isPlaying = true;
-  updateButton();
+  document.getElementById("playPauseBtn").style.display = "inline-block";
 }
 
-function togglePlayPause() {
-  if (!player || !currentSong) return;
-
-  isPlaying ? player.pauseVideo() : player.playVideo();
-}
-
-function onPlayerStateChange(e) {
-  isPlaying = e.data === YT.PlayerState.PLAYING;
-  updateButton();
-}
-
-function updateButton() {
-  document.getElementById("playPauseBtn").textContent =
-    isPlaying ? "⏸" : "▶︎";
-}
-
-document.getElementById("playPauseBtn").onclick = togglePlayPause;
 </script>
 
 </body>
