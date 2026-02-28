@@ -1,176 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>MYMUSICK</title>
-<link rel="icon" href="img/Logo.png">
-<link rel="stylesheet" href="estilo.css">
-  
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MYMUSICK</title>
+    <link rel="icon" href="img/Logo.png" />
+    <link rel="stylesheet" href="estilo.css" />
+  </head>
 
-<body>
+  <body>
+    <header>
+      <div class="lgimg">
+        <img src="img/Logo.png" alt="Logo MYMUSICK" />
+        <h1 class="title">MYMUSICK</h1>
+      </div>
 
-<header>
-  <div class="lgimg">
-    <img src="img/Logo.png" alt="Logo MYMUSICK">
-    <h1 class="title">MYMUSICK</h1>
-  </div>
+      <div class="ctsearch">
+        <input class="search" type="search" placeholder="Busca tu Música 🎵" />
+      </div>
 
-  <div class="ctsearch">
-    <input class="search" type="search" placeholder="Busca tu Música 🎵">
-  </div>
-  
-  <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
-</header>
+      <button class="bttlg" onclick="login.showModal()">Iniciar Sesión</button>
+    </header>
 
-<aside class="sidebar">
- <div class="iconsdbar">
-     <a href="#inicio">🏠</a>
-     <a href="#seguido">#</a>
-     <a href="#megusta">👍</a>
-     <a href="#Descargados">⚡️</a>
- </div>
- <div class="textsdbar">
-   <a href="#inicio">Inicio</a>
-   <a href="#seguido">Seguidos</a>
-   <a href="#megusta">Me gusta</a>
-   <a href="#Descargados">Descargas</a>
- </div>
-</aside>
+    <aside class="sidebar">
+      <div class="iconsdbar">
+        <a href="#inicio">🏠</a>
+        <a href="#seguido">#</a>
+        <a href="#megusta">👍</a>
+        <a href="#Descargados">⚡️</a>
+      </div>
+      <div class="textsdbar">
+        <a href="#inicio">Inicio</a>
+        <a href="#seguido">Seguidos</a>
+        <a href="#megusta">Me gusta</a>
+        <a href="#Descargados">Descargas</a>
+      </div>
+    </aside>
 
-<p class="intxt">¿Qué vas a escuchar hoy?</p>
+    <p class="intxt">¿Qué vas a escuchar hoy?</p>
 
-<div id="results"></div>
+    <div id="results"></div>
 
-<footer class="player">
-  <span id="nowPlaying">Nada reproduciéndose</span>
-  <button id="playPauseBtn" style="display:none"></button>
-  <div id="yt-player" style="width:0;height:0;overflow:hidden"></div>
-</footer>
+    <footer class="player">
+      <span id="nowPlaying">Nada reproduciéndose</span>
+      <button id="playPauseBtn" style="display: none"></button>
+      <div id="yt-player" style="width: 0; height: 0; overflow: hidden"></div>
+    </footer>
 
-<div id="list" style="display:none;position:absolute;background:black;padding:10px;border:1px solid #333;">
-<a href="#">Me gusta</a><br>
-<a href="#">Descargar</a>
-</div>
+    <div id="list" style="display: none; position: absolute; background: black; padding: 10px; border: 1px solid #333">
+      <a href="#">Me gusta</a>
+      <br />
+      <a href="#">Descargar</a>
+    </div>
 
-<canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
 
-<script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-<script>
+    <script>
+      const input = document.querySelector(".search");
+      const results = document.getElementById("results");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
 
-const input = document.querySelector(".search");
-const results = document.getElementById("results");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+      input.addEventListener("keydown", async (e) => {
+        if (e.key !== "Enter") return;
 
+        const query = input.value.trim();
+        if (!query) return;
 
-input.addEventListener("keydown", async (e) => {
-  if (e.key !== "Enter") return;
+        results.innerHTML = `<p>Buscando... 🎶</p>`;
 
-  const query = input.value.trim();
-  if (!query) return;
+        try {
+          const res = await fetch("https://mymusick-backend.onrender.com/search?q=" + encodeURIComponent(query));
+          const songs = await res.json();
+          renderSongs(songs);
+        } catch {
+          results.innerHTML = `<p>Error al buscar 😢</p>`;
+        }
+      });
 
-  results.innerHTML = `<p>Buscando... 🎶</p>`;
+      function renderSongs(songs) {
+        results.innerHTML = "";
 
-  try {
-    const res = await fetch(
-      "https://mymusick-backend.onrender.com/search?q=" +
-      encodeURIComponent(query)
-    );
-    const songs = await res.json();
-    renderSongs(songs);
-  } catch {
-    results.innerHTML = `<p>Error al buscar 😢</p>`;
-  }
-});
+        if (!songs?.length) {
+          results.textContent = "No se encontraron canciones";
+          return;
+        }
 
+        songs.forEach((song) => {
+          const div = document.createElement("div");
+          div.className = "song";
 
-function renderSongs(songs) {
-  results.innerHTML = "";
-
-  if (!songs?.length) {
-    results.textContent = "No se encontraron canciones";
-    return;
-  }
-
-  songs.forEach(song => {
-    const div = document.createElement("div");
-    div.className = "song";
-
-    div.innerHTML = `
+          div.innerHTML = `
       <img src="${song.thumbnail}" width="120" loading="lazy" crossorigin="anonymous">
       <strong>${song.title}</strong>
       <small>${song.artist}</small>
     `;
 
-    div.addEventListener("mouseenter", () => {
-      detectarColor(song.thumbnail, div);
-    });
+          div.addEventListener("mouseenter", () => {
+            detectarColor(song.thumbnail, div);
+          });
 
-    div.addEventListener("mouseleave", () => {
-      div.style.background = "";
-    });
+          div.addEventListener("mouseleave", () => {
+            div.style.background = "";
+          });
 
-    div.addEventListener("click", () => {
-      loadSong(song);
-    });
+          div.addEventListener("click", () => {
+            loadSong(song);
+          });
 
-    results.appendChild(div);
-  });
-}
-
-function detectarColor(imgURL, element){
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = imgURL;
-
-  img.onload = function(){
-    canvas.width = img.width / 4;
-    canvas.height = img.height / 4;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-    const colorCount = {};
-    let max = 0;
-    let dominant = "0,0,0";
-
-    for(let i=0;i<data.length;i+=16){
-      const r = data[i];
-      const g = data[i+1];
-      const b = data[i+2];
-
-      if(r+g+b < 60 || r+g+b > 720) continue;
-
-      const rgb = `${r},${g},${b}`;
-      colorCount[rgb] = (colorCount[rgb] || 0) + 1;
-
-      if(colorCount[rgb] > max){
-        max = colorCount[rgb];
-        dominant = rgb;
+          results.appendChild(div);
+        });
       }
-    }
 
-    element.style.background = `rgba(${dominant},0.35)`;
-  };
-}
+      function detectarColor(imgURL, element) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = imgURL;
 
-let player;
+        img.onload = function () {
+          canvas.width = img.width / 4;
+          canvas.height = img.height / 4;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player("yt-player", {
-    height: "0",
-    width: "0"
-  });
-}
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          const colorCount = {};
+          let max = 0;
+          let dominant = "0,0,0";
 
-function loadSong(song) {
-  if (!player) return;
-  player.loadVideoById(song.id);
-  document.getElementById("playPauseBtn").style.display = "inline-block";
-}
+          for (let i = 0; i < data.length; i += 16) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
 
-</script>
+            if (r + g + b < 60 || r + g + b > 720) continue;
 
-</body>
+            const rgb = `${r},${g},${b}`;
+            colorCount[rgb] = (colorCount[rgb] || 0) + 1;
+
+            if (colorCount[rgb] > max) {
+              max = colorCount[rgb];
+              dominant = rgb;
+            }
+          }
+
+          element.style.background = `rgba(${dominant},0.35)`;
+        };
+      }
+
+      let player;
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player("yt-player", {
+          height: "0",
+          width: "0",
+        });
+      }
+
+      function loadSong(song) {
+        if (!player) return;
+        player.loadVideoById(song.id);
+        document.getElementById("playPauseBtn").style.display = "inline-block";
+      }
+    </script>
+  </body>
 </html>
