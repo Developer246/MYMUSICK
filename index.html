@@ -233,32 +233,31 @@ function loadSong(song) {
         startSeconds: 0
     });
 
-    playPauseBtn.style.display = "inline-block";
-    playPauseBtn.textContent = "⏸️ Pausar";
-    nowPlayingText.textContent = `${song.title} - ${song.artist}`;
-}
+  function togglePlayPause() {
+  if (!player || !currentVideoId) return;
 
-function togglePlayPause() {
-    if (!player) return;
-
-    const state = player.getPlayerState();
-
-    if (state === YT.PlayerState.PLAYING) {
-        player.pauseVideo();
-        playPauseBtn.textContent = "▶️ Reproducir";
-    } else {
-        player.playVideo();
-        playPauseBtn.textContent = "⏸️ Pausar";
-    }
+  if (isPlaying) {
+    player.pauseVideo();
+  } else {
+    player.playVideo();
+  }
 }
 
 function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-        playPauseBtn.textContent = "▶️ Reproducir";
-    }
+  if (event.data === YT.PlayerState.PLAYING) {
+    isPlaying = true;
+  } else if (event.data === YT.PlayerState.PAUSED) {
+    isPlaying = false;
+  }
+  updateButton();
 }
 
-playPauseBtn.addEventListener("click", togglePlayPause);
+function updateButton() {
+  const btn = document.getElementById("playPauseBtn");
+  btn.textContent = isPlaying ? "⏸" : "▶︎";
+}
+
+document.getElementById("playPauseBtn").onclick = togglePlayPause;
 
 </script>
 
