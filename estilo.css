@@ -5,17 +5,17 @@
   font-style: normal;
 }
 
-/* Fuente por defecto para textos pequeños (artistas, etc) */
+/* Fuente base */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   background-color: black;
-  padding-bottom: 100px; /* Espacio para el footer fijo */
+  padding-bottom: 100px;
   color: white;
 }
 
-/* Utilidad para ocultar elementos */
+/* Utilidad */
 .hidden {
   display: none !important;
   width: 0 !important;
@@ -30,7 +30,8 @@ header {
   align-items: center;
   background-color: #04CDA8;
   z-index: 5;
-  height: 150px;
+  min-height: 150px; /* mejor que height fijo */
+  padding: 0 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
@@ -43,7 +44,7 @@ header {
 .lgimg img {
   height: 120px;
   width: 120px;
-  border-radius: 50%; /* Opcional: hace el logo redondo */
+  border-radius: 50%;
   object-fit: cover;
 }
 
@@ -65,12 +66,12 @@ header {
   font-size: 16px; 
   background-color: black; 
   color: white; 
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
 }
 
 .search:focus {
   box-shadow: 0 0 10px rgba(255, 87, 87, 0.5);
-  width: 280px; /* Efecto visual al hacer click */
+  width: 280px;
 }
 
 .bttlg {
@@ -83,7 +84,7 @@ header {
   color: white;
   font-family: 'Gyanko', sans-serif;
   font-size: 16px;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .bttlg:hover {
@@ -95,7 +96,6 @@ header {
 /* --- Contenido Principal --- */
 .intxt {
   margin-top: 40px;
-  color: white;
   font-family: 'Gyanko', sans-serif;
   font-size: 25px;
   text-align: center;
@@ -105,16 +105,15 @@ header {
 .sidebar {
   position: fixed;
   top: 150px;
+  bottom: 0; /* mejor que height calculado */
   left: 0;
   width: 170px;
   background-color: #111;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Corregido: era 'aling' */
-  justify-content: center;
+  align-items: center;
   gap: 20px;
-  height: calc(100vh - 150px);
   padding: 20px 0;
   box-shadow: 2px 0 10px rgba(0,0,0,0.5);
 }
@@ -126,7 +125,7 @@ header {
   text-decoration: none;
   padding: 10px 20px;
   position: relative;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .sidebar a:hover {
@@ -157,6 +156,7 @@ header {
   gap: 20px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   min-height: 400px;
 }
 
@@ -178,13 +178,12 @@ header {
   padding: 12px;
   background: #111;
   border-radius: 15px;
-  color: white;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 6px;
   scroll-snap-align: start;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
   border: 1px solid transparent;
 }
 
@@ -223,7 +222,7 @@ header {
 }
 
 /* --- Footer Player --- */
-footer {
+footer.player {
   background-color: #04CDA8;
   height: 80px;
   width: 100%;
@@ -255,7 +254,7 @@ footer {
   border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .player button:hover {
@@ -270,116 +269,17 @@ footer {
   font-weight: bold;
 }
 
-/* --- Menú Contextual --- */
-#list {
-  background: #1d1d1d;
-  border: 1px solid #333;
-  padding: 10px;
-  position: absolute;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-#list a {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-}
-
-#list a:hover {
-  background-color: #FF5757;
-}
-
-/* --- Modal Login --- */
-dialog {
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 87, 87, 0.6);
-  border-radius: 18px;
-  color: white;
-  width: 500px;
-  padding: 25px 20px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  opacity: 0;
-  z-index: 100;
-}
-
-dialog[open] {
-  animation: dialogIn 0.3s ease-out forwards;
-}
-
-@keyframes dialogIn {
-  from {
-    transform: translate(-50%, -50%) scale(0.7);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.login-form h3 {
-  font-family: 'Gyanko', sans-serif;
-  font-size: 22px;
-  font-weight: normal;
-  color: #FF5757;
-  margin: 0;
-}
-
-.input-field {
-  width: 85%;
-  padding: 12px 15px;
-  border-radius: 15px;
-  border: 2px solid #FF5757;
-  background: transparent;
-  color: white;
-  font-size: 16px;
-  outline: none;
-}
-
-.input-field::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(4px); }
-  50% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
-}
-
-.input-field:invalid:focus {
-  animation: shake 300ms;
-}
-
-/* --- Responsive Mobile --- */
+/* --- Responsive --- */
 @media (max-width: 600px) {
+
   header {
     flex-direction: column;
-    height: auto;
     padding: 20px;
     gap: 15px;
   }
 
   .sidebar {
-    display: none; /* Ocultar sidebar en móvil */
+    display: none;
   }
 
   #results {
@@ -392,14 +292,13 @@ dialog[open] {
   }
 
   .search {
-    width: 100%; /* Ocupar todo el ancho en móvil */
+    width: 100%;
     max-width: 300px;
   }
 
   .player {
     flex-direction: column;
     gap: 10px;
-    height: auto;
     padding: 15px;
   }
 
