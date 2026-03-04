@@ -72,7 +72,7 @@
 
 <footer class="player">
     <span id="nowPlaying">Selecciona una canción</span>
-    <button id="playPauseBtn" style="display:none;">⏸️ Pausar</button>
+    <button id="playPauseBtn" style="display:none;">▶️ Reproducir</button>
     <div id="yt-player" class="hidden"></div>
 </footer>
 
@@ -98,6 +98,7 @@ const playPauseBtn = document.getElementById("playPauseBtn");
 const nowPlayingText = document.getElementById("nowPlaying");
 
 let player;
+let isPlaying = false; // Variable global para el estado
 
 /* =============================
    YOUTUBE API
@@ -106,7 +107,7 @@ window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("yt-player", {
         height: "0",
         width: "0",
-        playerVars: { autoplay: 1 },
+        playerVars: { autoplay: 0 }, // Cambiado a 0 para que no arranque solo al cargar
         events: { onStateChange: onPlayerStateChange }
     });
 };
@@ -185,7 +186,7 @@ function renderSongs(songs) {
 }
 
 /* =============================
-   DETECCIÓN DE COLOR (INTACTA)
+   DETECCIÓN DE COLOR
 ============================= */
 function detectarColor(imgURL, element) {
     const img = new Image();
@@ -228,35 +229,49 @@ function detectarColor(imgURL, element) {
 function loadSong(song) {
     if (!player) return;
 
+    // Actualizar texto
+    nowPlayingText.textContent = `${song.title} - ${song.artist}`;
+
+    // Cargar video
     player.loadVideoById({
         videoId: song.id,
         startSeconds: 0
     });
 
-  function togglePlayPause() {
-  if (!player || !currentVideoId) return;
-
-  if (isPlaying) {
-    player.pauseVideo();
-  } else {
-    player.playVideo();
-  }
+    // Resetear estado visualmente hasta que la API confirme
+    isPlaying = false; 
+    updateButton();
 }
 
+// Función para cambiar entre Play y Pause
+function togglePlayPause() {
+    if (!player) return;
+    
+    if (isPlaying) {
+        player.pauseVideo();
+    } else {
+        player.playVideo();
+    }
+}
+
+// Evento que llama la API de YouTube cuando cambia el estado
 function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
-    isPlaying = true;
-  } else if (event.data === YT.PlayerState.PAUSED) {
-    isPlaying = false;
-  }
-  updateButton();
+    if (event.data === YT.PlayerState.PLAYING) {
+        isPlaying = true;
+    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+        isPlaying = false;
+    }
+    updateButton();
 }
 
+// Actualiza el texto del botón
 function updateButton() {
-  const btn = document.getElementById("playPauseBtn");
-  btn.textContent = isPlaying ? "⏸" : "▶︎";
+    const btn = document.getElementById("playPauseBtn");
+    btn.style.display = "inline-block"; // Asegura que sea visible
+    btn.textContent = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
 }
 
+// Asignar el evento al botón
 document.getElementById("playPauseBtn").onclick = togglePlayPause;
 
 </script>
