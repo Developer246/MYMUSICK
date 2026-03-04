@@ -3,101 +3,180 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
     <title>MYMUSICK</title>
-    <link rel="icon" href="img/Logo.png">
+    <link rel="icon" href="img/Logo.png" type="image/png">
     <link rel="stylesheet" href="estilo.css">
+    
+    <style>
+        /* Clase de utilidad para ocultar elementos sin JS */
+        .hidden {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Estilos base para el modal si el CSS externo falla */
+        dialog {
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            max-width: 400px;
+            width: 90%;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <div class="lgimg">
-            <img src="img/Logo.png" alt="Logo MYMUSICK">
+            <img src="img/Logo.png" alt="Logo MYMUSICK" width="50" height="50">
             <h1 class="title">MYMUSICK</h1>
         </div>
 
         <div class="ctsearch">
-            <input class="search" type="search" placeholder="Busca tu M&uacute;sica &#127925;">
+            <label for="searchInput" class="sr-only">Buscar música</label>
+            <input id="searchInput" class="search" type="search" placeholder="Busca tu Música 🎵" aria-label="Buscar canciones">
         </div>
 
-        <button class="bttlg" onclick="login.showModal()">Iniciar Sesi&oacute;n</button>
+        <button class="bttlg" onclick="document.getElementById('loginModal').showModal()" aria-label="Iniciar sesión">
+            Iniciar Sesión
+        </button>
     </header>
 
     <aside class="sidebar">
-        <div class="iconsdbar">
-            <a href="#inicio">&#127968;</a>
-            <a href="#seguido">#</a>
-            <a href="#megusta">&#128077;</a>
-            <a href="#Descargados">&#9889;&#65039;</a>
-        </div>
-        <div class="textsdbar">
-            <a href="#inicio">Inicio</a>
-            <a href="#seguido">Seguidos</a>
-            <a href="#megusta">Me gusta</a>
-            <a href="#Descargados">Descargas</a>
-        </div>
+        <nav aria-label="Navegación principal">
+            <div class="iconsdbar">
+                <a href="#inicio" aria-label="Ir al inicio">🏠</a>
+                <a href="#seguido" aria-label="Ver seguidos">👥</a>
+                <a href="#megusta" aria-label="Ver me gusta">❤️</a>
+                <a href="#Descargados" aria-label="Ver descargas">💾</a>
+            </div>
+            <div class="textsdbar">
+                <a href="#inicio">Inicio</a>
+                <a href="#seguido">Seguidos</a>
+                <a href="#megusta">Me gusta</a>
+                <a href="#Descargados">Descargas</a>
+            </div>
+        </nav>
     </aside>
 
-    <p class="intxt">&iquest;Qu&eacute; vas a escuchar hoy?</p>
-
-    <div id="results"></div>
+    <main>
+        <p class="intxt">¿Qué vas a escuchar hoy?</p>
+        
+        <div id="results" aria-live="polite">
+            <!-- Aquí se inyectarán los resultados -->
+        </div>
+    </main>
 
     <footer class="player">
-        <span id="nowPlaying"></span>
-        <button id="playPauseBtn" style="display: none"></button>
-        <div id="yt-player" style="width: 0; height: 0; overflow: hidden"></div>
+        <span id="nowPlaying" aria-live="polite">Selecciona una canción</span>
+        <button id="playPauseBtn" style="display: none" aria-label="Reproducir o pausar">⏸️ Pausar</button>
+        
+        <!-- Contenedor del reproductor de YouTube oculto -->
+        <div id="yt-player" class="hidden"></div>
     </footer>
 
-    <div id="list" style="display: none; position: absolute; background: black; padding: 10px; border: 1px solid #333">
+    <!-- Menú contextual (oculto por defecto) -->
+    <div id="list" class="hidden" style="position: absolute; background: black; padding: 10px; border: 1px solid #333; z-index: 100;">
         <a href="#">Me gusta</a>
         <br>
         <a href="#">Descargar</a>
     </div>
 
-    <canvas id="canvas" style="display:none"></canvas>
+    <!-- Canvas para análisis de color (oculto) -->
+    <canvas id="canvas" class="hidden"></canvas>
 
+    <!-- Modal de Login (Estructura alineada con CSS) -->
+    <dialog id="loginModal">
+        <form method="dialog" class="login-form">
+            <h3>Bienvenido</h3>
+            <input type="text" class="input-field" placeholder="Usuario" required aria-label="Usuario">
+            <input type="password" class="input-field" placeholder="Contraseña" required aria-label="Contraseña">
+            <button type="submit" class="bttlg" style="width: 100%;">Entrar</button>
+        </form>
+    </dialog>
+
+    <!-- Scripts -->
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        const input = document.querySelector(".search");
+        // Referencias al DOM
+        const input = document.getElementById("searchInput");
         const results = document.getElementById("results");
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const nowPlayingText = document.getElementById("nowPlaying");
 
+        // Estado del reproductor
+        let player;
+        let isPlaying = false;
+
+        // Inicializar API de YouTube
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player("yt-player", {
+                height: "0",
+                width: "0",
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // Evento de búsqueda
         input.addEventListener("keydown", async (e) => {
             if (e.key !== "Enter") return;
 
             const query = input.value.trim();
             if (!query) return;
 
-            results.innerHTML = `<p>Buscando... &#127926;`;
+            // Feedback visual de carga
+            results.innerHTML = `<p class="loading">Buscando... 🎵</p>`;
 
             try {
-                const res = await fetch("https://mymusick-backend.onrender.com/search?q=" + encodeURIComponent(query));
+                // Nota: Asegúrate de que tu backend maneje CORS correctamente
+                const res = await fetch(`https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`);
+                
+                if (!res.ok) throw new Error("Error en la red");
+                
                 const songs = await res.json();
                 renderSongs(songs);
-            } catch {
-                results.innerHTML = `<p>Error al buscar &#128546;`;
+            } catch (error) {
+                console.error(error);
+                results.innerHTML = `<p class="error">Error al buscar. Intenta de nuevo. 😕</p>`;
             }
         });
 
+        // Renderizar canciones
         function renderSongs(songs) {
             results.innerHTML = "";
 
             if (!songs?.length) {
-                results.textContent = "No se encontraron canciones";
+                results.innerHTML = `<p class="empty">No se encontraron canciones para "${input.value}"</p>`;
                 return;
             }
 
             songs.forEach((song) => {
                 const div = document.createElement("div");
                 div.className = "song";
+                div.setAttribute("role", "button");
+                div.setAttribute("tabindex", "0"); // Hacerlo accesible con teclado
 
                 div.innerHTML = `
-                    <img src="${song.thumbnail}" width="120" loading="lazy" crossorigin="anonymous">
-                    <strong>${song.title}</strong>
-                    <small>${song.artist}</small>
+                    <img src="${song.thumbnail}" alt="Portada de ${song.title}" width="120" loading="lazy" crossorigin="anonymous">
+                    <div class="song-info">
+                        <strong>${song.title}</strong>
+                        <small>${song.artist}</small>
+                    </div>
                 `;
 
+                // Efecto de color al pasar el mouse
                 div.addEventListener("mouseenter", () => {
                     detectarColor(song.thumbnail, div);
                 });
@@ -106,20 +185,24 @@
                     div.style.background = "";
                 });
 
-                div.addEventListener("click", () => {
-                    loadSong(song);
+                // Reproducir al hacer click o Enter
+                div.addEventListener("click", () => loadSong(song));
+                div.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") loadSong(song);
                 });
 
                 results.appendChild(div);
             });
         }
 
+        // Análisis de color (Canvas)
         function detectarColor(imgURL, element) {
             const img = new Image();
             img.crossOrigin = "anonymous";
             img.src = imgURL;
 
             img.onload = function() {
+                // Reducir tamaño para rendimiento
                 canvas.width = img.width / 4;
                 canvas.height = img.height / 4;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -129,11 +212,13 @@
                 let max = 0;
                 let dominant = "0,0,0";
 
+                // Muestreo de píxeles (saltando para rendimiento)
                 for (let i = 0; i < data.length; i += 16) {
                     const r = data[i];
                     const g = data[i + 1];
                     const b = data[i + 2];
 
+                    // Filtrar colores muy oscuros o muy claros (ruido)
                     if (r + g + b < 60 || r + g + b > 720) continue;
 
                     const rgb = `${r},${g},${b}`;
@@ -145,52 +230,42 @@
                     }
                 }
 
-                element.style.background = `rgba(${dominant},0.35)`;
+                element.style.background = `rgba(${dominant}, 0.35)`;
             };
         }
 
-        let player;
-        let isPlaying = false;
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player("yt-player", {
-                height: "0",
-                width: "0",
-                events: {
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
+        // Control del reproductor
         function loadSong(song) {
             if (!player) return;
+            
             player.loadVideoById(song.id);
-            document.getElementById("playPauseBtn").style.display = "inline-block";
-            document.getElementById("playPauseBtn").textContent = "⏸️ Pausar";
-            document.getElementById("nowPlaying").textContent = song.title + " - " + song.artist;
+            playPauseBtn.style.display = "inline-block";
+            playPauseBtn.textContent = "⏸️ Pausar";
+            nowPlayingText.textContent = `${song.title} - ${song.artist}`;
             isPlaying = true;
         }
 
         function togglePlayPause() {
             if (!player) return;
+            
             if (isPlaying) {
                 player.pauseVideo();
-                document.getElementById("playPauseBtn").textContent = "▶ Reproducir";
+                playPauseBtn.textContent = "▶ Reproducir";
             } else {
                 player.playVideo();
-                document.getElementById("playPauseBtn").textContent = "⏸Pausar";
+                playPauseBtn.textContent = "⏸️ Pausar";
             }
             isPlaying = !isPlaying;
         }
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
-                document.getElementById("playPauseBtn").textContent = "▶️ Reproducir";
+                playPauseBtn.textContent = "▶️ Reproducir";
                 isPlaying = false;
             }
         }
 
-        document.getElementById("playPauseBtn").addEventListener("click", togglePlayPause);
+        playPauseBtn.addEventListener("click", togglePlayPause);
     </script>
 </body>
 </html>
