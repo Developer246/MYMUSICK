@@ -8,17 +8,15 @@
     <title>MYMUSICK</title>
     <link rel="icon" href="img/Logo.png" type="image/png">
     <link rel="stylesheet" href="estilo.css">
-    
+
     <style>
-        /* Clase de utilidad para ocultar elementos sin JS */
         .hidden {
             display: none !important;
             width: 0 !important;
             height: 0 !important;
             overflow: hidden !important;
         }
-        
-        /* Estilos base para el modal si el CSS externo falla */
+
         dialog {
             padding: 20px;
             border-radius: 8px;
@@ -26,246 +24,183 @@
             max-width: 400px;
             width: 90%;
         }
-        dialog::backdrop {
-            background: rgba(0, 0, 0, 0.5);
-        }
     </style>
 </head>
 
 <body>
-    <header>
-        <div class="lgimg">
-            <img src="img/Logo.png" alt="Logo MYMUSICK" width="50" height="50">
-            <h1 class="title">MYMUSICK</h1>
-        </div>
 
-        <div class="ctsearch">
-            <label for="searchInput" class="sr-only">Buscar música</label>
-            <input id="searchInput" class="search" type="search" placeholder="Busca tu Música 🎵" aria-label="Buscar canciones">
-        </div>
-
-        <button class="bttlg" onclick="document.getElementById('loginModal').showModal()" aria-label="Iniciar sesión">
-            Iniciar Sesión
-        </button>
-    </header>
-
-    <aside class="sidebar">
-        <nav aria-label="Navegación principal">
-            <div class="iconsdbar">
-                <a href="#inicio" aria-label="Ir al inicio">🏠</a>
-                <a href="#seguido" aria-label="Ver seguidos">👥</a>
-                <a href="#megusta" aria-label="Ver me gusta">❤️</a>
-                <a href="#Descargados" aria-label="Ver descargas">💾</a>
-            </div>
-            <div class="textsdbar">
-                <a href="#inicio">Inicio</a>
-                <a href="#seguido">Seguidos</a>
-                <a href="#megusta">Me gusta</a>
-                <a href="#Descargados">Descargas</a>
-            </div>
-        </nav>
-    </aside>
-
-    <main>
-        <p class="intxt">¿Qué vas a escuchar hoy?</p>
-        
-        <div id="results" aria-live="polite">
-            <!-- Aquí se inyectarán los resultados -->
-        </div>
-    </main>
-
-    <footer class="player">
-        <span id="nowPlaying" aria-live="polite">Selecciona una canción</span>
-        <button id="playPauseBtn" style="display: none" aria-label="Reproducir o pausar">⏸️ Pausar</button>
-        
-        <!-- Contenedor del reproductor de YouTube oculto -->
-        <div id="yt-player" class="hidden"></div>
-    </footer>
-
-    <!-- Menú contextual (oculto por defecto) -->
-    <div id="list" class="hidden" style="position: absolute; background: black; padding: 10px; border: 1px solid #333; z-index: 100;">
-        <a href="#">Me gusta</a>
-        <br>
-        <a href="#">Descargar</a>
+<header>
+    <div class="lgimg">
+        <img src="img/Logo.png" alt="Logo MYMUSICK" width="50" height="50">
+        <h1 class="title">MYMUSICK</h1>
     </div>
 
-    <!-- Canvas para análisis de color (oculto) -->
-    <canvas id="canvas" class="hidden"></canvas>
+    <div class="ctsearch">
+        <input id="searchInput" class="search" type="search"
+            placeholder="Busca tu Música 🎵"
+            aria-label="Buscar canciones">
+    </div>
 
-    <!-- Modal de Login (Estructura alineada con CSS) -->
-    <dialog id="loginModal">
-        <form method="dialog" class="login-form">
-            <h3>Bienvenido</h3>
-            <input type="text" class="input-field" placeholder="Usuario" required aria-label="Usuario">
-            <input type="password" class="input-field" placeholder="Contraseña" required aria-label="Contraseña">
-            <button type="submit" class="bttlg" style="width: 100%;">Entrar</button>
-        </form>
-    </dialog>
+    <button class="bttlg"
+        onclick="document.getElementById('loginModal').showModal()">
+        Iniciar Sesión
+    </button>
+</header>
 
-    <!-- Scripts -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+<aside class="sidebar">
+    <nav>
+        <div class="iconsdbar">
+            <a href="#inicio">🏠</a>
+            <a href="#seguido">👥</a>
+            <a href="#megusta">❤️</a>
+            <a href="#Descargados">💾</a>
+        </div>
+    </nav>
+</aside>
 
-    <script>
-        // Referencias al DOM
-        const input = document.getElementById("searchInput");
-        const results = document.getElementById("results");
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        const playPauseBtn = document.getElementById("playPauseBtn");
-        const nowPlayingText = document.getElementById("nowPlaying");
+<main>
+    <p class="intxt">¿Qué vas a escuchar hoy?</p>
+    <div id="results"></div>
+</main>
 
-        // Estado del reproductor
-        let player;
-        let isPlaying = false;
+<footer class="player">
+    <span id="nowPlaying">Selecciona una canción</span>
+    <button id="playPauseBtn" style="display:none;">⏸️ Pausar</button>
+    <div id="yt-player" class="hidden"></div>
+</footer>
 
-        // Inicializar API de YouTube
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player("yt-player", {
-                height: "0",
-                width: "0",
-                events: {
-                    'onStateChange': onPlayerStateChange
-                }
-            });
+<dialog id="loginModal">
+    <form method="dialog" class="login-form">
+        <h3>Bienvenido</h3>
+        <input type="text" placeholder="Usuario" required>
+        <input type="password" placeholder="Contraseña" required>
+        <button type="submit" class="bttlg" style="width:100%;">Entrar</button>
+    </form>
+</dialog>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+const input = document.getElementById("searchInput");
+const results = document.getElementById("results");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const nowPlayingText = document.getElementById("nowPlaying");
+
+let player;
+
+// API global obligatoria
+window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player("yt-player", {
+        height: "0",
+        width: "0",
+        playerVars: {
+            autoplay: 1
+        },
+        events: {
+            onStateChange: onPlayerStateChange
         }
+    });
+};
 
-        // Evento de búsqueda
-        input.addEventListener("keydown", async (e) => {
-            if (e.key !== "Enter") return;
+// Buscar canciones
+input.addEventListener("keydown", async (e) => {
+    if (e.key !== "Enter") return;
 
-            const query = input.value.trim();
-            if (!query) return;
+    const query = input.value.trim();
+    if (!query) return;
 
-            // Feedback visual de carga
-            results.innerHTML = `<p class="loading">Buscando... 🎵</p>`;
+    results.innerHTML = `<p>Buscando... 🎵</p>`;
 
-            try {
-                // Nota: Asegúrate de que tu backend maneje CORS correctamente
-                const res = await fetch(`https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`);
-                
-                if (!res.ok) throw new Error("Error en la red");
-                
-                const songs = await res.json();
-                renderSongs(songs);
-            } catch (error) {
-                console.error(error);
-                results.innerHTML = `<p class="error">Error al buscar. Intenta de nuevo. 😕</p>`;
-            }
+    try {
+        const res = await fetch(`https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Error");
+
+        const songs = await res.json();
+        renderSongs(songs);
+
+    } catch {
+        results.innerHTML = `<p>Error al buscar 😕</p>`;
+    }
+});
+
+function renderSongs(songs) {
+    results.innerHTML = "";
+
+    if (!songs?.length) {
+        results.innerHTML = `<p>No se encontraron resultados</p>`;
+        return;
+    }
+
+    songs.forEach(song => {
+
+        const div = document.createElement("div");
+        div.className = "song";
+        div.tabIndex = 0;
+
+        const img = document.createElement("img");
+        img.src = song.thumbnail;
+        img.width = 120;
+        img.loading = "lazy";
+
+        const info = document.createElement("div");
+        info.className = "song-info";
+
+        const title = document.createElement("strong");
+        title.textContent = song.title;
+
+        const artist = document.createElement("small");
+        artist.textContent = song.artist;
+
+        info.appendChild(title);
+        info.appendChild(artist);
+
+        div.appendChild(img);
+        div.appendChild(info);
+
+        div.addEventListener("click", () => loadSong(song));
+        div.addEventListener("keydown", e => {
+            if (e.key === "Enter") loadSong(song);
         });
 
-        // Renderizar canciones
-        function renderSongs(songs) {
-            results.innerHTML = "";
+        results.appendChild(div);
+    });
+}
 
-            if (!songs?.length) {
-                results.innerHTML = `<p class="empty">No se encontraron canciones para "${input.value}"</p>`;
-                return;
-            }
+function loadSong(song) {
+    if (!player) return;
 
-            songs.forEach((song) => {
-                const div = document.createElement("div");
-                div.className = "song";
-                div.setAttribute("role", "button");
-                div.setAttribute("tabindex", "0"); // Hacerlo accesible con teclado
+    player.loadVideoById({
+        videoId: song.id,
+        startSeconds: 0
+    });
 
-                div.innerHTML = `
-                    <img src="${song.thumbnail}" alt="Portada de ${song.title}" width="120" loading="lazy" crossorigin="anonymous">
-                    <div class="song-info">
-                        <strong>${song.title}</strong>
-                        <small>${song.artist}</small>
-                    </div>
-                `;
+    playPauseBtn.style.display = "inline-block";
+    playPauseBtn.textContent = "⏸️ Pausar";
+    nowPlayingText.textContent = `${song.title} - ${song.artist}`;
+}
 
-                // Efecto de color al pasar el mouse
-                div.addEventListener("mouseenter", () => {
-                    detectarColor(song.thumbnail, div);
-                });
+function togglePlayPause() {
+    if (!player) return;
 
-                div.addEventListener("mouseleave", () => {
-                    div.style.background = "";
-                });
+    const state = player.getPlayerState();
 
-                // Reproducir al hacer click o Enter
-                div.addEventListener("click", () => loadSong(song));
-                div.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") loadSong(song);
-                });
+    if (state === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+        playPauseBtn.textContent = "▶️ Reproducir";
+    } else {
+        player.playVideo();
+        playPauseBtn.textContent = "⏸️ Pausar";
+    }
+}
 
-                results.appendChild(div);
-            });
-        }
+function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.ENDED) {
+        playPauseBtn.textContent = "▶️ Reproducir";
+    }
+}
 
-        // Análisis de color (Canvas)
-        function detectarColor(imgURL, element) {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = imgURL;
+playPauseBtn.addEventListener("click", togglePlayPause);
+</script>
 
-            img.onload = function() {
-                // Reducir tamaño para rendimiento
-                canvas.width = img.width / 4;
-                canvas.height = img.height / 4;
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                const colorCount = {};
-                let max = 0;
-                let dominant = "0,0,0";
-
-                // Muestreo de píxeles (saltando para rendimiento)
-                for (let i = 0; i < data.length; i += 16) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-
-                    // Filtrar colores muy oscuros o muy claros (ruido)
-                    if (r + g + b < 60 || r + g + b > 720) continue;
-
-                    const rgb = `${r},${g},${b}`;
-                    colorCount[rgb] = (colorCount[rgb] || 0) + 1;
-
-                    if (colorCount[rgb] > max) {
-                        max = colorCount[rgb];
-                        dominant = rgb;
-                    }
-                }
-
-                element.style.background = `rgba(${dominant}, 0.35)`;
-            };
-        }
-
-        // Control del reproductor
-        function loadSong(song) {
-            if (!player) return;
-            
-            player.loadVideoById(song.id);
-            playPauseBtn.style.display = "inline-block";
-            playPauseBtn.textContent = "⏸️ Pausar";
-            nowPlayingText.textContent = `${song.title} - ${song.artist}`;
-            isPlaying = true;
-        }
-
-        function togglePlayPause() {
-            if (!player) return;
-            
-            if (isPlaying) {
-                player.pauseVideo();
-                playPauseBtn.textContent = "▶ Reproducir";
-            } else {
-                player.playVideo();
-                playPauseBtn.textContent = "⏸️ Pausar";
-            }
-            isPlaying = !isPlaying;
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-                playPauseBtn.textContent = "▶️ Reproducir";
-                isPlaying = false;
-            }
-        }
-
-        playPauseBtn.addEventListener("click", togglePlayPause);
-    </script>
 </body>
 </html>
