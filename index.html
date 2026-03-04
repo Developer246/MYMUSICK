@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
     <title>MYMUSICK</title>
+
     <link rel="icon" href="img/Logo.png" type="image/png">
     <link rel="stylesheet" href="estilo.css">
 
@@ -24,6 +25,10 @@
             max-width: 400px;
             width: 90%;
         }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 
@@ -36,13 +41,15 @@
     </div>
 
     <div class="ctsearch">
-        <input id="searchInput" class="search" type="search"
-            placeholder="Busca tu Música 🎵"
-            aria-label="Buscar canciones">
+        <input id="searchInput"
+               class="search"
+               type="search"
+               placeholder="Busca tu Música 🎵"
+               aria-label="Buscar canciones">
     </div>
 
     <button class="bttlg"
-        onclick="document.getElementById('loginModal').showModal()">
+            onclick="document.getElementById('loginModal').showModal()">
         Iniciar Sesión
     </button>
 </header>
@@ -50,10 +57,10 @@
 <aside class="sidebar">
     <nav>
         <div class="iconsdbar">
-            <a href="#inicio">🏠</a>
-            <a href="#seguido">👥</a>
-            <a href="#megusta">❤️</a>
-            <a href="#Descargados">💾</a>
+            <a href="#inicio">🏠 Inicio</a>
+            <a href="#seguido">👥 Seguidos</a>
+            <a href="#megusta">❤️ Me gusta</a>
+            <a href="#descargas">💾 Descargas</a>
         </div>
     </nav>
 </aside>
@@ -69,6 +76,8 @@
     <div id="yt-player" class="hidden"></div>
 </footer>
 
+<canvas id="canvas" class="hidden"></canvas>
+
 <dialog id="loginModal">
     <form method="dialog" class="login-form">
         <h3>Bienvenido</h3>
@@ -83,26 +92,28 @@
 <script>
 const input = document.getElementById("searchInput");
 const results = document.getElementById("results");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const nowPlayingText = document.getElementById("nowPlaying");
 
 let player;
 
-// API global obligatoria
+/* =============================
+   YOUTUBE API
+============================= */
 window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("yt-player", {
         height: "0",
         width: "0",
-        playerVars: {
-            autoplay: 1
-        },
-        events: {
-            onStateChange: onPlayerStateChange
-        }
+        playerVars: { autoplay: 1 },
+        events: { onStateChange: onPlayerStateChange }
     });
 };
 
-// Buscar canciones
+/* =============================
+   BUSCADOR
+============================= */
 input.addEventListener("keydown", async (e) => {
     if (e.key !== "Enter") return;
 
@@ -112,7 +123,10 @@ input.addEventListener("keydown", async (e) => {
     results.innerHTML = `<p>Buscando... 🎵</p>`;
 
     try {
-        const res = await fetch(`https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(
+            `https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`
+        );
+
         if (!res.ok) throw new Error("Error");
 
         const songs = await res.json();
@@ -123,6 +137,9 @@ input.addEventListener("keydown", async (e) => {
     }
 });
 
+/* =============================
+   RENDERIZAR RESULTADOS
+============================= */
 function renderSongs(songs) {
     results.innerHTML = "";
 
@@ -137,28 +154,29 @@ function renderSongs(songs) {
         div.className = "song";
         div.tabIndex = 0;
 
-        const img = document.createElement("img");
-        img.src = song.thumbnail;
-        img.width = 120;
-        img.loading = "lazy";
+        div.innerHTML = `
+            <img src="${song.thumbnail}"
+                 alt="Portada de ${song.title}"
+                 width="120"
+                 loading="lazy"
+                 crossorigin="anonymous">
+            <div class="song-info">
+                <strong>${song.title}</strong>
+                <small>${song.artist}</small>
+            </div>
+        `;
 
-        const info = document.createElement("div");
-        info.className = "song-info";
+        div.addEventListener("mouseenter", () => {
+            detectarColor(song.thumbnail, div);
+        });
 
-        const title = document.createElement("strong");
-        title.textContent = song.title;
-
-        const artist = document.createElement("small");
-        artist.textContent = song.artist;
-
-        info.appendChild(title);
-        info.appendChild(artist);
-
-        div.appendChild(img);
-        div.appendChild(info);
+        div.addEventListener("mouseleave", () => {
+            div.style.background = "";
+        });
 
         div.addEventListener("click", () => loadSong(song));
-        div.addEventListener("keydown", e => {
+
+        div.addEventListener("keydown", (e) => {
             if (e.key === "Enter") loadSong(song);
         });
 
@@ -166,6 +184,47 @@ function renderSongs(songs) {
     });
 }
 
+/* =============================
+   DETECCIÓN DE COLOR (INTACTA)
+============================= */
+function detectarColor(imgURL, element) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = imgURL;
+
+    img.onload = function() {
+        canvas.width = img.width / 4;
+        canvas.height = img.height / 4;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const colorCount = {};
+        let max = 0;
+        let dominant = "0,0,0";
+
+        for (let i = 0; i < data.length; i += 16) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            if (r + g + b < 60 || r + g + b > 720) continue;
+
+            const rgb = `${r},${g},${b}`;
+            colorCount[rgb] = (colorCount[rgb] || 0) + 1;
+
+            if (colorCount[rgb] > max) {
+                max = colorCount[rgb];
+                dominant = rgb;
+            }
+        }
+
+        element.style.background = `rgba(${dominant}, 0.35)`;
+    };
+}
+
+/* =============================
+   REPRODUCTOR
+============================= */
 function loadSong(song) {
     if (!player) return;
 
@@ -200,6 +259,7 @@ function onPlayerStateChange(event) {
 }
 
 playPauseBtn.addEventListener("click", togglePlayPause);
+
 </script>
 
 </body>
