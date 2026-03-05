@@ -235,7 +235,12 @@ footer.player {
   z-index: 10;
   box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
 }
-
+.playercontent{
+  display:flex;
+  justify-content:center;
+  border: 1 solid transparent;
+  border-radius:15px;
+}
 .player {
   display: flex;
   gap: 15px;
