@@ -98,7 +98,7 @@ const playPauseBtn = document.getElementById("playPauseBtn");
 const nowPlayingText = document.getElementById("nowPlaying");
 
 let player;
-let isPlaying = false; // Variable global para el estado
+let isPlaying = false;
 
 /* =============================
    YOUTUBE API
@@ -107,7 +107,7 @@ window.onYouTubeIframeAPIReady = function () {
     player = new YT.Player("yt-player", {
         height: "0",
         width: "0",
-        playerVars: { autoplay: 0 }, // Cambiado a 0 para que no arranque solo al cargar
+        playerVars: { autoplay: 0 },
         events: { onStateChange: onPlayerStateChange }
     });
 };
@@ -149,8 +149,10 @@ function renderSongs(songs) {
         return;
     }
 
-    songs.forEach(song => {
+    // ✅ CORREGIDO: Se muestra mensaje de resultados encontrados
+    results.innerHTML = `<p style="color:white">canciones en tu búsqueda</p>`;
 
+    songs.forEach(song => {
         const div = document.createElement("div");
         div.className = "song";
         div.tabIndex = 0;
@@ -229,21 +231,17 @@ function detectarColor(imgURL, element) {
 function loadSong(song) {
     if (!player) return;
 
-    // Actualizar texto
     nowPlayingText.textContent = `${song.title} - ${song.artist}`;
 
-    // Cargar video
     player.loadVideoById({
         videoId: song.id,
         startSeconds: 0
     });
 
-    // Resetear estado visualmente hasta que la API confirme
     isPlaying = false; 
     updateButton();
 }
 
-// Función para cambiar entre Play y Pause
 function togglePlayPause() {
     if (!player) return;
     
@@ -254,7 +252,6 @@ function togglePlayPause() {
     }
 }
 
-// Evento que llama la API de YouTube cuando cambia el estado
 function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
@@ -264,14 +261,12 @@ function onPlayerStateChange(event) {
     updateButton();
 }
 
-// Actualiza el texto del botón
 function updateButton() {
     const btn = document.getElementById("playPauseBtn");
-    btn.style.display = "inline-block"; // Asegura que sea visible
+    btn.style.display = "inline-block";
     btn.textContent = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
 }
 
-// Asignar el evento al botón
 document.getElementById("playPauseBtn").onclick = togglePlayPause;
 
 </script>
