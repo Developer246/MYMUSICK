@@ -26,9 +26,6 @@
             width: 90%;
         }
 
-        dialog::backdrop {
-            background: rgba(0, 0, 0, 0.5);
-        }
     </style>
 </head>
 
@@ -69,13 +66,13 @@
     <p class="intxt">¿Qué vas a escuchar hoy?</p>
     <div id="results"></div>
 </main>
-
+<div class="playercontent">
 <footer class="player">
     <span id="nowPlaying">Selecciona una canción</span>
     <button id="playPauseBtn" style="display:none;">▶️ Reproducir</button>
     <div id="yt-player" class="hidden"></div>
 </footer>
-
+</div>
 <canvas id="canvas" class="hidden"></canvas>
 
 <dialog id="loginModal">
