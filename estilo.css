@@ -175,6 +175,7 @@ header {
 
 .song {
   min-width: 160px;
+  height:187px;
   padding: 12px;
   background: #111;
   border-radius: 15px;
