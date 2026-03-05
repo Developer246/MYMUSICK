@@ -238,8 +238,6 @@ footer.player {
 .playercontent{
   display:flex;
   justify-content:center;
-  border: 1 solid transparent;
-  border-radius:15px;
 }
 .player {
   display: flex;
@@ -249,6 +247,8 @@ footer.player {
   max-width: 800px;
   justify-content: space-between;
   padding: 0 20px;
+  border: 1 solid transparent;
+  border-radius:15px;
 }
 
 .player button {
