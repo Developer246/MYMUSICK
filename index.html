@@ -2,86 +2,81 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
-    <title>MYMUSICK</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
+<title>MYMUSICK</title>
 
-    <link rel="icon" href="img/Logo.png" type="image/png">
-    <link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="img/Logo.png" type="image/png">
+<link rel="stylesheet" href="estilo.css">
 
-    <style>
-        .hidden {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-            overflow: hidden !important;
-        }
+<style>
+.hidden {
+  display: none !important;
+}
 
-        dialog {
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            max-width: 400px;
-            width: 90%;
-        }
+dialog {
+  padding: 20px;
+  border-radius: 10px;
+  border: none;
+  max-width: 400px;
+  width: 90%;
+}
 
-    </style>
+dialog::backdrop {
+  background: rgba(0,0,0,0.6);
+}
+</style>
 </head>
 
 <body>
 
 <header>
-    <div class="lgimg">
-        <img src="img/Logo.png" alt="Logo MYMUSICK" width="50" height="50">
-        <h1 class="title">MYMUSICK</h1>
-    </div>
+  <div class="lgimg">
+    <img src="img/Logo.png" alt="Logo MYMUSICK">
+    <h1 class="title">MYMUSICK</h1>
+  </div>
 
-    <div class="ctsearch">
-        <input id="searchInput"
-               class="search"
-               type="search"
-               placeholder="Busca tu Música 🎵"
-               aria-label="Buscar canciones">
-    </div>
+  <input id="searchInput"
+         class="search"
+         type="search"
+         placeholder="Busca tu Música 🎵"
+         aria-label="Buscar canciones">
 
-    <button class="bttlg"
-            onclick="document.getElementById('loginModal').showModal()">
-        Iniciar Sesión
-    </button>
+  <button class="bttlg" id="openLogin">
+    Iniciar Sesión
+  </button>
 </header>
 
 <aside class="sidebar">
-    <nav>
-        <div class="iconsdbar">
-            <a href="#inicio">🏠 Inicio</a>
-            <a href="#seguido">👥 Seguidos</a>
-            <a href="#megusta">❤️ Me gusta</a>
-            <a href="#descargas">💾 Descargas</a>
-        </div>
-    </nav>
+  <nav>
+    <a href="#inicio">🏠 Inicio</a>
+    <a href="#seguido">👥 Seguidos</a>
+    <a href="#megusta">❤️ Me gusta</a>
+    <a href="#descargas">💾 Descargas</a>
+  </nav>
 </aside>
 
 <main>
-    <p class="intxt">¿Qué vas a escuchar hoy?</p>
-    <div id="results"></div>
+  <p class="intxt">¿Qué vas a escuchar hoy?</p>
+  <div id="results"></div>
 </main>
-<div class="playercontent">
+
 <footer class="player">
-    <span id="nowPlaying">Selecciona una canción</span>
-    <button id="playPauseBtn" style="display:none;">▶️ Reproducir</button>
-    <div id="yt-player" class="hidden"></div>
+  <span id="nowPlaying">Selecciona una canción</span>
+  <button id="playPauseBtn" class="hidden">▶️ Reproducir</button>
+  <div id="yt-player" class="hidden"></div>
 </footer>
-</div>
+
 <canvas id="canvas" class="hidden"></canvas>
 
 <dialog id="loginModal">
-    <form method="dialog" class="login-form">
-        <h3>Bienvenido</h3>
-        <input type="text" placeholder="Usuario" required>
-        <input type="password" placeholder="Contraseña" required>
-        <button type="submit" class="bttlg" style="width:100%;">Entrar</button>
-    </form>
+  <form method="dialog">
+    <h3>Bienvenido</h3>
+    <input type="text" placeholder="Usuario" required>
+    <input type="password" placeholder="Contraseña" required>
+    <button type="submit" class="bttlg" style="width:100%;">Entrar</button>
+  </form>
 </dialog>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -93,6 +88,9 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const nowPlayingText = document.getElementById("nowPlaying");
+const loginModal = document.getElementById("loginModal");
+
+document.getElementById("openLogin").onclick = () => loginModal.showModal();
 
 let player;
 let isPlaying = false;
@@ -101,170 +99,141 @@ let isPlaying = false;
    YOUTUBE API
 ============================= */
 window.onYouTubeIframeAPIReady = function () {
-    player = new YT.Player("yt-player", {
-        height: "0",
-        width: "0",
-        playerVars: { autoplay: 0 },
-        events: { onStateChange: onPlayerStateChange }
-    });
+  player = new YT.Player("yt-player", {
+    height: "0",
+    width: "0",
+    playerVars: { autoplay: 0 },
+    events: { onStateChange: onPlayerStateChange }
+  });
 };
 
 /* =============================
    BUSCADOR
 ============================= */
 input.addEventListener("keydown", async (e) => {
-    if (e.key !== "Enter") return;
+  if (e.key !== "Enter") return;
 
-    const query = input.value.trim();
-    if (!query) return;
+  const query = input.value.trim();
+  if (!query) return;
 
-    results.innerHTML = `<p>Buscando... 🎵</p>`;
+  results.innerHTML = `<p>Buscando... 🎵</p>`;
 
-    try {
-        const res = await fetch(
-            `https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`
-        );
+  try {
+    const res = await fetch(
+      `https://mymusick-backend.onrender.com/search?q=${encodeURIComponent(query)}`
+    );
 
-        if (!res.ok) throw new Error("Error");
+    if (!res.ok) throw new Error();
 
-        const songs = await res.json();
-        renderSongs(songs);
+    const songs = await res.json();
+    renderSongs(songs);
 
-    } catch {
-        results.innerHTML = `<p>Error al buscar 😕</p>`;
-    }
+  } catch {
+    results.innerHTML = `<p>Error al buscar 😕</p>`;
+  }
 });
 
 /* =============================
    RENDERIZAR RESULTADOS
 ============================= */
 function renderSongs(songs) {
-    results.innerHTML = "";
+  results.innerHTML = "";
 
-    if (!songs?.length) {
-        results.innerHTML = `<p>No se encontraron resultados</p>`;
-        return;
-    }
+  if (!songs?.length) {
+    results.innerHTML = `<p>No se encontraron resultados</p>`;
+    return;
+  }
 
-    results.innerHTML = `<p style="color:white">canciones en tu búsqueda</p>`;
+  songs.forEach(song => {
+    const div = document.createElement("div");
+    div.className = "song";
+    div.tabIndex = 0;
 
-    songs.forEach(song => {
-        const div = document.createElement("div");
-        div.className = "song";
-        div.tabIndex = 0;
+    div.innerHTML = `
+      <img src="${song.thumbnail}" 
+           alt="Portada de ${song.title}"
+           loading="lazy"
+           crossorigin="anonymous">
+      <div class="song-info">
+        <strong>${song.title}</strong>
+        <small>${song.artist}</small>
+      </div>
+    `;
 
-        div.innerHTML = `
-            <img src="${song.thumbnail}"
-                 alt="Portada de ${song.title}"
-                 width="120"
-                 loading="lazy"
-                 crossorigin="anonymous">
-            <div class="song-info">
-                <strong>${song.title}</strong>
-                <small>${song.artist}</small>
-            </div>
-        `;
-
-        div.addEventListener("mouseenter", () => {
-            detectarColor(song.thumbnail, div);
-        });
-
-        div.addEventListener("mouseleave", () => {
-            div.style.background = "";
-        });
-
-        div.addEventListener("click", () => loadSong(song));
-
-        div.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") loadSong(song);
-        });
-
-        results.appendChild(div);
+    div.addEventListener("mouseenter", () => detectarColor(song.thumbnail, div));
+    div.addEventListener("mouseleave", () => div.style.background = "");
+    div.addEventListener("click", () => loadSong(song));
+    div.addEventListener("keydown", e => {
+      if (e.key === "Enter") loadSong(song);
     });
+
+    results.appendChild(div);
+  });
 }
 
 /* =============================
-   DETECCIÓN DE COLOR
+   COLOR DOMINANTE
 ============================= */
 function detectarColor(imgURL, element) {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = imgURL;
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imgURL;
 
-    img.onload = function() {
-        canvas.width = img.width / 4;
-        canvas.height = img.height / 4;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  img.onload = () => {
+    canvas.width = img.width / 4;
+    canvas.height = img.height / 4;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-        const colorCount = {};
-        let max = 0;
-        let dominant = "0,0,0";
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    const colors = {};
+    let max = 0;
+    let dominant = "0,0,0";
 
-        for (let i = 0; i < data.length; i += 16) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
+    for (let i = 0; i < data.length; i += 16) {
+      const r = data[i];
+      const g = data[i+1];
+      const b = data[i+2];
 
-            if (r + g + b < 60 || r + g + b > 720) continue;
+      if (r+g+b < 60 || r+g+b > 720) continue;
 
-            const rgb = `${r},${g},${b}`;
-            colorCount[rgb] = (colorCount[rgb] || 0) + 1;
+      const rgb = `${r},${g},${b}`;
+      colors[rgb] = (colors[rgb] || 0) + 1;
 
-            if (colorCount[rgb] > max) {
-                max = colorCount[rgb];
-                dominant = rgb;
-            }
-        }
+      if (colors[rgb] > max) {
+        max = colors[rgb];
+        dominant = rgb;
+      }
+    }
 
-        element.style.background = `rgba(${dominant}, 0.35)`;
-    };
+    element.style.background = `rgba(${dominant}, 0.35)`;
+  };
 }
 
 /* =============================
    REPRODUCTOR
 ============================= */
 function loadSong(song) {
-    if (!player) return;
+  if (!player) return;
 
-    nowPlayingText.textContent = `${song.title} - ${song.artist}`;
+  nowPlayingText.textContent = `${song.title} - ${song.artist}`;
 
-    player.loadVideoById({
-        videoId: song.id,
-        startSeconds: 0
-    });
-
-    isPlaying = false; 
-    updateButton();
+  player.loadVideoById(song.id);
+  player.playVideo();
 }
 
 function togglePlayPause() {
-    if (!player) return;
-    
-    if (isPlaying) {
-        player.pauseVideo();
-    } else {
-        player.playVideo();
-    }
+  if (!player) return;
+
+  isPlaying ? player.pauseVideo() : player.playVideo();
 }
 
 function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.PLAYING) {
-        isPlaying = true;
-    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-        isPlaying = false;
-    }
-    updateButton();
+  isPlaying = event.data === YT.PlayerState.PLAYING;
+  playPauseBtn.classList.remove("hidden");
+  playPauseBtn.textContent = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
 }
 
-function updateButton() {
-    const btn = document.getElementById("playPauseBtn");
-    btn.style.display = "inline-block";
-    btn.textContent = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
-}
-
-document.getElementById("playPauseBtn").onclick = togglePlayPause;
-
+playPauseBtn.onclick = togglePlayPause;
 </script>
 
 </body>
