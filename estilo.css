@@ -189,7 +189,7 @@ header {
 
 .song:hover {
   background: #1e1e1e;
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: #FF5757;
 }
 
