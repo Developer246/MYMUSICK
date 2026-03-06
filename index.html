@@ -10,38 +10,32 @@
 
   <title>MYMUSICK</title>
 
-  <link rel="icon" href="img/Logo.png" type="image/png">
+  <link rel="icon" href="https://developer246.github.io/MYMUSICK/img/Logo.png" type="image/png">
 
   <link rel="stylesheet" href="estilooriginal.css">
 </head>
 
 <body>
 
-<header class="main-header">
+<header class="header">
 
-  <div class="logo-container">
-    <img src="img/Logo.png" alt="Logo MYMUSICK" loading="lazy">
+  <div class="header-left">
+    <img src="img/Logo.png" alt="Logo MYMUSICK" class="logo">
     <h1 class="title">MYMUSICK</h1>
   </div>
 
-  <div class="search-container">
-    <input
+  <div class="header-center">
+    <input 
       id="searchInput"
       class="search"
       type="search"
       placeholder="Busca tu música 🎵"
-      aria-label="Buscar canciones"
-      autocomplete="off"
-      spellcheck="false">
+      autocomplete="off">
   </div>
 
-  <button
-    class="bttlg"
-    id="openLogin"
-    type="button"
-    aria-label="Iniciar sesión">
-    Iniciar Sesión
-  </button>
+  <div class="header-right">
+    <button class="bttlg" id="openLogin">Iniciar Sesión</button>
+  </div>
 
 </header>
 
@@ -187,3 +181,4 @@
 
 </body>
 </html>
+<style>
