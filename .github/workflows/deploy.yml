@@ -11,7 +11,19 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Inyectar URL del backend
-        run: sed -i 's|%%BACKEND_URL%%|${{ secrets.BACKEND_URL }}|g' app.js
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: |
+          python3 -c "
+          import os
+          url = os.environ['BACKEND_URL']
+          with open('app.js', 'r') as f:
+              content = f.read()
+          content = content.replace('%%BACKEND_URL%%', url)
+          with open('app.js', 'w') as f:
+              f.write(content)
+          print('URL inyectada:', url)
+          "
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
