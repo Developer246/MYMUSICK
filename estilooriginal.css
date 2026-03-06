@@ -34,36 +34,40 @@ body {
 /* ================================
    HEADER
 ================================ */
-
-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  min-height: 150px;
-  padding: 0 20px;
-  background: var(--primary);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 30px;
+  height:90px;
+  background:#04CDA8;
 }
 
-.lgimg {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* lado izquierdo */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-.lgimg img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
+.logo{
+  height:55px;
+  width:55px;
+  border-radius:50%;
+  object-fit:cover;
 }
 
-.title {
-  font-family: "Gyanko";
-  font-size: 40px;
-  letter-spacing: 2px;
-  color: var(--accent);
-  margin: 0;
+/* centro */
+.header-center{
+  flex:1;
+  display:flex;
+  justify-content:center;
+}
+
+/* derecha */
+.header-right{
+  display:flex;
+  align-items:center;
 }
 
 /* ================================
