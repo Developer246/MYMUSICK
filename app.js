@@ -1,4 +1,4 @@
-const BACKEND = "https://mymusick-backend-production.up.railway.app/";
+const BACKEND = "https://mymusick-backend-production.up.railway.app";
 
 /* =========================
    ELEMENTOS DEL DOM
