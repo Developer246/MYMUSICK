@@ -22,10 +22,21 @@ jobs:
           content = content.replace('%%BACKEND_URL%%', url)
           with open('app.js', 'w') as f:
               f.write(content)
-          print('URL inyectada:', url)
+          print('Reemplazo completado')
           "
+          grep "BACKEND" app.js | head -1
+
+      - name: Verificar reemplazo
+        run: |
+          if grep -q "%%BACKEND_URL%%" app.js; then
+            echo "ERROR: El placeholder no fue reemplazado"
+            exit 1
+          else
+            echo "OK: URL inyectada correctamente"
+          fi
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          exclude_assets: '.github'
