@@ -338,6 +338,8 @@ document.querySelectorAll(".iconsdbar a").forEach(link => {
     this.classList.add("active");
 
   });
+
+});
 audio.addEventListener("timeupdate", () => {
   if (audio.duration) {
     progressBar.value = audio.currentTime / audio.duration;
@@ -345,5 +347,4 @@ audio.addEventListener("timeupdate", () => {
 });
 progressBar.addEventListener("input", () => {
   audio.currentTime = progressBar.value * audio.duration;
-});
 });
