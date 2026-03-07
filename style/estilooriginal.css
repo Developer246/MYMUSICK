@@ -1,6 +1,8 @@
 @font-face {
-  font-family: "Gyanko";
+  font-family: 'Gyanko';
   src: url("fonts/gyanko-regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 :root {
