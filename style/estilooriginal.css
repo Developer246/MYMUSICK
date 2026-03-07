@@ -331,7 +331,7 @@ footer#player {
   z-index: 100;
 }
 
-#player-thumb {
+.player-thumb {
   width: 48px;
   height: 48px;
   border-radius: 8px;
@@ -340,10 +340,8 @@ footer#player {
   display: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
-
-#player-thumb.visible { display: block; }
-
-#player-text {
+.player-thumb.visible { display: block; }
+.player-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
