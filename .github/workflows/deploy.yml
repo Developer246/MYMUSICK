@@ -22,7 +22,7 @@ jobs:
           content = content.replace('%%BACKEND_URL%%', url)
           with open('app.js', 'w') as f:
               f.write(content)
-          print('Reemplazo completado')
+          print('URL inyectada:', url)
           "
           grep "BACKEND" app.js | head -1
 
@@ -35,8 +35,13 @@ jobs:
             echo "OK: URL inyectada correctamente"
           fi
 
+      - name: Copiar fuentes al directorio de deploy
+        run: |
+          ls -la fonts/ || echo "No hay carpeta fonts"
+
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           exclude_assets: '.github'
+          keep_files: false
