@@ -47,8 +47,8 @@ body {
 }
 
 .logo {
-  height: 55px;
-  width: 55px;
+  height: 75px;
+  width: 75px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -56,7 +56,7 @@ body {
 
 .title {
   font-family: "Gyanko";
-  font-size: 32px;
+  font-size: 40px;
   font-weight: normal;
   color: var(--accent);
   margin: 0;
