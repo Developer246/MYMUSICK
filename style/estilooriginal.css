@@ -315,7 +315,7 @@ main {
    PLAYER
 ================================ */
 
-footer.player {
+footer#player {
   position: fixed;
   bottom: 0; left: 0;
   width: 100%;
@@ -331,7 +331,7 @@ footer.player {
   z-index: 100;
 }
 
-.player-thumb {
+#player-thumb {
   width: 48px;
   height: 48px;
   border-radius: 8px;
@@ -341,9 +341,9 @@ footer.player {
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
-.player-thumb.visible { display: block; }
+#player-thumb.visible { display: block; }
 
-.player-text {
+#player-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -360,7 +360,7 @@ footer.player {
   text-overflow: ellipsis;
 }
 
-.player-sub {
+#player-sub {
   font-size: 12px;
   color: #006652;
   white-space: nowrap;
@@ -369,7 +369,7 @@ footer.player {
   display: none;
 }
 
-.player-sub.visible { display: block; }
+#player-sub.visible { display: block; }
 
 .btn-play-pause {
   width: 44px;
