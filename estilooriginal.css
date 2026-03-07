@@ -524,9 +524,8 @@ dialog::backdrop {
   .sidebar { display: none; }
   main { margin-left: 0; }
 
-  .search {
-    width: 100%;
-    max-width: 240px;
+  .title {
+    display:none;
   }
 
   #results { padding: 12px; gap: 12px; }
