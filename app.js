@@ -18,7 +18,7 @@ const volumeSlider = document.getElementById("volumeSlider");
 const loginModal   = document.getElementById("loginModal");
 const openLogin    = document.getElementById("openLogin");
 const closeLogin   = document.getElementById("closeLogin");
-const playerft = document.getElementById("player");
+const player = document.getElementById("player");
 /* =========================
    LOGIN MODAL
 ========================= */
