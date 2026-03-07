@@ -18,7 +18,7 @@ const volumeSlider = document.getElementById("volumeSlider");
 const loginModal   = document.getElementById("loginModal");
 const openLogin    = document.getElementById("openLogin");
 const closeLogin   = document.getElementById("closeLogin");
-
+const playerft = document.getElementById("player");
 /* =========================
    LOGIN MODAL
 ========================= */
@@ -261,6 +261,7 @@ function loadSong(song, el) {
   audio.src = `${BACKEND}/stream/${song.id}`;
 
   audio.load();
+   player.style.display = "inline-block";
 
   audio.play().catch(err => {
 
