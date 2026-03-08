@@ -261,7 +261,7 @@ function loadSong(song, el) {
   audio.src = `${BACKEND}/stream/${song.id}`;
 
   audio.load();
-   player.style.display = "inline-block";
+   player.style.display = "flex";
 
   audio.play().catch(err => {
 
