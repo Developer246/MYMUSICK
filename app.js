@@ -1,5 +1,7 @@
 const BACKEND = "https://mymusick-backend-production.up.railway.app";
 
+/* ELEMENTOS */
+
 const searchInput = document.getElementById("searchInput");
 const resultsEl = document.getElementById("results");
 
@@ -14,17 +16,19 @@ const progressBar = document.getElementById("progressBar");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 
+const player = document.getElementById("player");
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const audio = new Audio();
 
+/* AUDIO */
+
+const audio = new Audio();
 audio.volume = volumeSlider.value;
 
-let currentSongEl = null;
 
-
-/* AUDIO ANALYSER */
+/* VISUALIZER SETUP */
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const analyser = audioCtx.createAnalyser();
@@ -52,12 +56,15 @@ if(!query) return;
 resultsEl.innerHTML = "Buscando...";
 
 const res = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
+
 const songs = await res.json();
 
 renderSongs(songs);
 
 });
 
+
+/* RENDER */
 
 function renderSongs(songs){
 
@@ -71,13 +78,13 @@ div.className = "song";
 
 div.innerHTML = `
 <img src="${song.thumbnail}">
-<div>
+<div class="song-info">
 <strong>${song.title}</strong>
 <small>${song.artist}</small>
 </div>
 `;
 
-div.onclick = () => loadSong(song,div);
+div.onclick = ()=> loadSong(song);
 
 resultsEl.appendChild(div);
 
@@ -88,12 +95,9 @@ resultsEl.appendChild(div);
 
 /* CARGAR CANCIÓN */
 
-function loadSong(song,el){
+function loadSong(song){
 
-if(currentSongEl) currentSongEl.classList.remove("active-song");
-
-currentSongEl = el;
-el.classList.add("active-song");
+player.style.display = "flex";
 
 nowPlaying.textContent = song.title;
 playerArtist.textContent = song.artist;
@@ -101,6 +105,7 @@ playerArtist.textContent = song.artist;
 playerThumb.src = song.thumbnail;
 
 audio.src = `${BACKEND}/stream/${song.id}`;
+
 audio.play();
 
 canvas.classList.remove("hidden");
@@ -129,7 +134,7 @@ audio.volume = volumeSlider.value;
 };
 
 
-/* BARRA PROGRESO */
+/* PROGRESO */
 
 audio.addEventListener("timeupdate",()=>{
 
@@ -162,7 +167,7 @@ return `${m}:${s}`;
 }
 
 
-/* EFECTOS VISUALES */
+/* VISUALIZADOR */
 
 function startVisualizer(){
 
