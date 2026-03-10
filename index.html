@@ -1,99 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
-
-<title>MYMUSICK</title>
-
-<link rel="icon" href="img/Logo.png">
-<link rel="stylesheet" href="style/estilooriginal.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
+  <title>MYMUSICK</title>
+  <link rel="icon" href="img/Logo.png">
+  <link rel="stylesheet" href="style/estilooriginal.css">
 </head>
-
 <body>
 
 <header class="header">
-
-<div class="header-left">
-<img src="img/Logo.png" class="logo">
-<h1 class="title">MYMUSICK</h1>
-</div>
-
-<div class="header-center">
-
-<input
-id="searchInput"
-class="search"
-type="search"
-placeholder="Busca tu música 🎵"
-autocomplete="off">
-
-</div>
-
+  <div class="header-left">
+    <div class="logo-placeholder">🎵</div>
+    <h1 class="title">MYMUSICK</h1>
+  </div>
+  <div class="header-center">
+    <input id="searchInput" class="search" type="search"
+           placeholder="Busca tu música 🎵" autocomplete="off">
+  </div>
+  <div class="header-right">
+    <button class="bttlg" id="openLogin">Iniciar Sesión</button>
+  </div>
 </header>
 
+<aside class="sidebar">
+  <nav class="iconsdbar">
+    <a href="#inicio" class="active"><span>🏠</span><span>Inicio</span></a>
+    <a href="#seguido"><span>👥</span><span>Seguidos</span></a>
+    <a href="#megusta"><span>❤️</span><span>Me gusta</span></a>
+    <a href="#descargas"><span>💾</span><span>Descargas</span></a>
+  </nav>
+</aside>
 
-<main class="main-content">
-
-<p class="intxt">¿Qué vas a escuchar hoy?</p>
-
-<section id="results" class="results"></section>
-
+<main>
+  <p class="intxt">¿Qué vas a escuchar hoy?</p>
+  <section id="results" class="results"></section>
 </main>
 
-
 <footer id="player" style="display:none">
-
-<img id="playerThumb" class="player-thumb">
-
-<div class="player-text">
-
-<span id="nowPlaying">Selecciona una canción</span>
-<span id="playerArtist"></span>
-
-</div>
-
-<div class="player-progress">
-
-<span id="currentTime">0:00</span>
-
-<input
-id="progressBar"
-type="range"
-min="0"
-max="1"
-step="0.001"
-value="0">
-
-<span id="duration">0:00</span>
-
-</div>
-
-<button id="playPauseBtn">▶</button>
-
-<div class="volume-wrap">
-
-<span>🔊</span>
-
-<input
-id="volumeSlider"
-type="range"
-min="0"
-max="1"
-step="0.05"
-value="0.8">
-
-</div>
-
+  <img id="playerThumb" class="player-thumb" src="" alt="Portada">
+  <div class="player-text">
+    <span id="nowPlaying">Selecciona una canción</span>
+    <span id="playerArtist"></span>
+  </div>
+  <div class="player-progress">
+    <span id="currentTime">0:00</span>
+    <input id="progressBar" type="range" min="0" max="1" step="0.001" value="0">
+    <span id="duration">0:00</span>
+  </div>
+  <button id="playPauseBtn">▶</button>
+  <div class="volume-wrap">
+    <span>🔊</span>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.8">
+  </div>
 </footer>
 
 <canvas id="canvas" class="hidden"></canvas>
 
-<script src="app.js"></script>
+<dialog id="loginModal">
+  <form method="dialog" class="login-form">
+    <button type="button" class="btn-close-dialog" id="closeLogin">✕</button>
+    <h3>Acceder</h3>
+    <p>Inicia sesión para guardar tu música</p>
+    <input type="text" placeholder="Usuario" required autocomplete="username">
+    <input type="password" placeholder="Contraseña" required autocomplete="current-password">
+    <button type="submit" class="btn-submit">Entrar</button>
+  </form>
+</dialog>
 
+<script src="app.js"></script>
 </body>
 </html>
