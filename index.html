@@ -2,9 +2,11 @@
 <html lang="es">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="MYMUSICK - Busca y escucha tu música favorita sin interrupciones.">
+<meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
+
 <title>MYMUSICK</title>
 
 <link rel="icon" href="img/Logo.png">
@@ -22,51 +24,20 @@
 </div>
 
 <div class="header-center">
+
 <input
 id="searchInput"
 class="search"
 type="search"
 placeholder="Busca tu música 🎵"
 autocomplete="off">
-</div>
 
-<div class="header-right">
-<button class="bttlg" id="openLogin">Iniciar Sesión</button>
 </div>
 
 </header>
 
 
-<aside class="sidebar">
-
-<nav class="iconsdbar">
-
-<a href="#inicio" class="active">
-<span>🏠</span>
-<span>Inicio</span>
-</a>
-
-<a href="#seguido">
-<span>👥</span>
-<span>Seguidos</span>
-</a>
-
-<a href="#megusta">
-<span>❤️</span>
-<span>Me gusta</span>
-</a>
-
-<a href="#descargas">
-<span>💾</span>
-<span>Descargas</span>
-</a>
-
-</nav>
-
-</aside>
-
-
-<main class="main-content" id="inicio">
+<main class="main-content">
 
 <p class="intxt">¿Qué vas a escuchar hoy?</p>
 
@@ -75,20 +46,28 @@ autocomplete="off">
 </main>
 
 
-<footer id="player">
+<footer id="player" style="display:none">
 
 <img id="playerThumb" class="player-thumb">
 
 <div class="player-text">
+
 <span id="nowPlaying">Selecciona una canción</span>
 <span id="playerArtist"></span>
+
 </div>
 
 <div class="player-progress">
 
 <span id="currentTime">0:00</span>
 
-<input id="progressBar" type="range" min="0" max="1" step="0.001" value="0">
+<input
+id="progressBar"
+type="range"
+min="0"
+max="1"
+step="0.001"
+value="0">
 
 <span id="duration">0:00</span>
 
