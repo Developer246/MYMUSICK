@@ -475,18 +475,6 @@ footer#player {
 
 #volumeSlider:hover::-webkit-slider-thumb { transform: scale(1.3); }
 
-/* === CANVAS VISUALIZER === */
-
-#canvas {
-  position: fixed;
-  bottom: var(--player-h);
-  left: 0;
-  width: 100%;
-  height: 80px;
-  z-index: 99;
-  pointer-events: none;
-}
-
 /* === LOGIN DIALOG === */
 
 dialog {
