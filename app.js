@@ -12,8 +12,6 @@ const progressBar   = document.getElementById("progressBar");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl    = document.getElementById("duration");
 const player        = document.getElementById("player");
-const canvas        = document.getElementById("canvas");
-const ctx           = canvas.getContext("2d");
 const openLoginBtn  = document.getElementById("openLogin");
 const closeLoginBtn = document.getElementById("closeLogin");
 const loginModal    = document.getElementById("loginModal");
@@ -21,45 +19,6 @@ const loginModal    = document.getElementById("loginModal");
 /* === AUDIO === */
 const audio = new Audio();
 audio.volume = volumeSlider.value;
-
-/* === VISUALIZADOR (canvas animado — no toca el audio) === */
-let vizRunning = false;
-
-function startVisualizer() {
-  canvas.classList.remove("hidden");
-  if (vizRunning) return;
-  vizRunning = true;
-  canvas.width  = window.innerWidth;
-  canvas.height = 80;
-
-  function draw() {
-    if (!vizRunning) return;
-    requestAnimationFrame(draw);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const bars     = 60;
-    const barWidth = canvas.width / bars;
-    const center   = canvas.height / 2;
-    const t        = Date.now() / 300;
-
-    for (let i = 0; i < bars; i++) {
-      const height = (Math.sin(t + i * 0.4) * 0.5 + 0.5)
-                   * (Math.sin(t * 0.7 + i * 0.2) * 0.3 + 0.7)
-                   * center * 0.9 + 2;
-      const x = i * barWidth;
-      ctx.fillStyle = "#04CDA8";
-      ctx.fillRect(x, center - height, barWidth * 0.7, height);
-      ctx.fillRect(x, center,          barWidth * 0.7, height);
-    }
-  }
-  draw();
-}
-
-function stopVisualizer() {
-  vizRunning = false;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.classList.add("hidden");
-}
 
 /* === ESTADO === */
 let currentSongCard = null;
@@ -69,7 +28,6 @@ let searchTimeout   = null;
 audio.addEventListener("play", () => {
   playPauseBtn.textContent = "⏸";
   playPauseBtn.classList.add("playing");
-  startVisualizer();
 });
 
 audio.addEventListener("pause", () => {
