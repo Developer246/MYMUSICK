@@ -1,351 +1,204 @@
 const BACKEND = "https://mymusick-backend-production.up.railway.app";
 
-/* =========================
-   ELEMENTOS DEL DOM
-========================= */
-
-const searchInput  = document.getElementById("searchInput");
-const resultsEl    = document.getElementById("results");
-const canvasEl     = document.getElementById("canvas");
-const ctx2d        = canvasEl.getContext("2d");
+const searchInput = document.getElementById("searchInput");
+const resultsEl = document.getElementById("results");
 
 const playPauseBtn = document.getElementById("playPauseBtn");
-const nowPlaying   = document.getElementById("nowPlaying");
+const nowPlaying = document.getElementById("nowPlaying");
 const playerArtist = document.getElementById("playerArtist");
-const playerThumb  = document.getElementById("playerThumb");
+const playerThumb = document.getElementById("playerThumb");
+
 const volumeSlider = document.getElementById("volumeSlider");
+const progressBar = document.getElementById("progressBar");
 
-const loginModal   = document.getElementById("loginModal");
-const openLogin    = document.getElementById("openLogin");
-const closeLogin   = document.getElementById("closeLogin");
-const player = document.getElementById("player");
-/* =========================
-   LOGIN MODAL
-========================= */
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
 
-openLogin.onclick = () => loginModal.showModal();
-closeLogin.onclick = () => loginModal.close();
-
-/* =========================
-   AUDIO PLAYER
-========================= */
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 const audio = new Audio();
-audio.volume = parseFloat(volumeSlider.value);
+
+audio.volume = volumeSlider.value;
 
 let currentSongEl = null;
 
-/* =========================
-   EVENTOS AUDIO
-========================= */
 
-audio.addEventListener("play", updatePlayerUI);
+/* AUDIO ANALYSER */
 
-audio.addEventListener("pause", updatePlayerUI);
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
 
-audio.addEventListener("ended", () => {
+const source = audioCtx.createMediaElementSource(audio);
 
-  updatePlayerUI();
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
 
-  if (currentSongEl) {
-    currentSongEl.classList.remove("active-song");
-    currentSongEl = null;
-  }
+analyser.fftSize = 256;
 
-});
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
 
-audio.addEventListener("error", () => {
 
-  nowPlaying.textContent = "Error al reproducir — intenta otra canción";
+/* BUSCADOR */
 
-});
+searchInput.addEventListener("keydown", async e => {
 
-/* =========================
-   BUSCADOR
-========================= */
+if(e.key !== "Enter") return;
 
-searchInput.addEventListener("keydown", async (e) => {
+const query = searchInput.value.trim();
+if(!query) return;
 
-  if (e.key !== "Enter") return;
+resultsEl.innerHTML = "Buscando...";
 
-  const query = searchInput.value.trim();
+const res = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
+const songs = await res.json();
 
-  if (!query) return;
-
-  resultsEl.innerHTML = `
-  <div class="status-msg">
-  <div class="loading-spinner"></div>
-  </div>
-  `;
-
-  try {
-
-    const res = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
-
-    if (!res.ok) throw new Error();
-
-    const songs = await res.json();
-
-    renderSongs(songs);
-
-  } catch {
-
-    resultsEl.innerHTML = `<p class="status-msg">Error al buscar 😕</p>`;
-
-  }
+renderSongs(songs);
 
 });
 
-/* =========================
-   RENDER CANCIONES
-========================= */
 
-function renderSongs(songs) {
+function renderSongs(songs){
 
-  resultsEl.innerHTML = "";
+resultsEl.innerHTML = "";
 
-  if (!songs?.length) {
+songs.forEach(song => {
 
-    resultsEl.innerHTML = `<p class="status-msg">No se encontraron resultados</p>`;
+const div = document.createElement("div");
 
-    return;
+div.className = "song";
 
-  }
+div.innerHTML = `
+<img src="${song.thumbnail}">
+<div>
+<strong>${song.title}</strong>
+<small>${song.artist}</small>
+</div>
+`;
 
-  songs.forEach((song, i) => {
+div.onclick = () => loadSong(song,div);
 
-    const div = document.createElement("div");
+resultsEl.appendChild(div);
 
-    div.className = "song";
-    div.tabIndex = 0;
-    div.role = "listitem";
-
-    div.style.animationDelay = `${i * 0.05}s`;
-
-    div.innerHTML = `
-      <img
-      src="${song.thumbnail}"
-      alt="Portada de ${song.title}"
-      loading="lazy"
-      crossorigin="anonymous">
-
-      <div class="song-info">
-        <strong title="${song.title}">${song.title}</strong>
-        <small title="${song.artist}">${song.artist}</small>
-      </div>
-
-      <div class="song-play-icon">▶</div>
-    `;
-
-    div.addEventListener("mouseenter", () =>
-      detectarColor(song.thumbnail, div)
-    );
-
-    div.addEventListener("mouseleave", () =>
-      div.style.background = ""
-    );
-
-    div.addEventListener("click", () =>
-      loadSong(song, div)
-    );
-
-    div.addEventListener("keydown", e => {
-
-      if (e.key === "Enter") loadSong(song, div);
-
-    });
-
-    resultsEl.appendChild(div);
-
-  });
+});
 
 }
 
-/* =========================
-   DETECTAR COLOR DOMINANTE
-========================= */
 
-function detectarColor(imgURL, element) {
+/* CARGAR CANCIÓN */
 
-  const img = new Image();
+function loadSong(song,el){
 
-  img.crossOrigin = "anonymous";
+if(currentSongEl) currentSongEl.classList.remove("active-song");
 
-  img.src = imgURL;
+currentSongEl = el;
+el.classList.add("active-song");
 
-  img.onload = () => {
+nowPlaying.textContent = song.title;
+playerArtist.textContent = song.artist;
 
-    canvasEl.width = Math.floor(img.width / 4);
-    canvasEl.height = Math.floor(img.height / 4);
+playerThumb.src = song.thumbnail;
 
-    ctx2d.drawImage(img, 0, 0, canvasEl.width, canvasEl.height);
+audio.src = `${BACKEND}/stream/${song.id}`;
+audio.play();
 
-    const data = ctx2d.getImageData(
-      0,
-      0,
-      canvasEl.width,
-      canvasEl.height
-    ).data;
+canvas.classList.remove("hidden");
 
-    const colors = {};
-
-    let max = 0;
-
-    let dominant = "80,80,80";
-
-    for (let i = 0; i < data.length; i += 32) {
-
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      if (r + g + b < 60 || r + g + b > 720) continue;
-
-      const key = `${r},${g},${b}`;
-
-      colors[key] = (colors[key] || 0) + 1;
-
-      if (colors[key] > max) {
-
-        max = colors[key];
-        dominant = key;
-
-      }
-
-    }
-
-    element.style.background = `rgba(${dominant},0.35)`;
-
-  };
+startVisualizer();
 
 }
 
-/* =========================
-   CARGAR CANCIÓN
-========================= */
 
-function loadSong(song, el) {
+/* PLAY PAUSE */
 
-  if (currentSongEl) {
+playPauseBtn.onclick = ()=>{
 
-    currentSongEl.classList.remove("active-song");
+if(audio.paused) audio.play();
+else audio.pause();
 
-    const icon = currentSongEl.querySelector(".song-play-icon");
+};
 
-    if (icon) icon.textContent = "▶";
 
-  }
+/* VOLUMEN */
 
-  currentSongEl = el;
+volumeSlider.oninput = ()=>{
 
-  if (el) {
+audio.volume = volumeSlider.value;
 
-    el.classList.add("active-song");
+};
 
-    const icon = el.querySelector(".song-play-icon");
 
-    if (icon) icon.textContent = "⏸";
+/* BARRA PROGRESO */
 
-  }
+audio.addEventListener("timeupdate",()=>{
 
-  nowPlaying.textContent = song.title;
+if(audio.duration){
 
-  playerArtist.textContent = song.artist;
+progressBar.value = audio.currentTime / audio.duration;
 
-  playerArtist.classList.add("visible");
-
-  playerThumb.src = song.thumbnail || "";
-
-  playerThumb.classList.add("visible");
-
-  audio.src = `${BACKEND}/stream/${song.id}`;
-
-  audio.load();
-   player.style.display = "flex";
-
-  audio.play().catch(err => {
-
-    console.error("Error reproduciendo:", err);
-
-  });
-
-  playPauseBtn.classList.add("visible");
+currentTimeEl.textContent = formatTime(audio.currentTime);
+durationEl.textContent = formatTime(audio.duration);
 
 }
 
-/* =========================
-   PLAY / PAUSE
-========================= */
+});
 
-function togglePlayPause() {
 
-  if (!audio.src) return;
+progressBar.oninput = ()=>{
 
-  audio.paused ? audio.play() : audio.pause();
+audio.currentTime = progressBar.value * audio.duration;
+
+};
+
+
+function formatTime(sec){
+
+const m = Math.floor(sec/60);
+const s = Math.floor(sec%60).toString().padStart(2,"0");
+
+return `${m}:${s}`;
 
 }
 
-playPauseBtn.addEventListener("click", togglePlayPause);
 
-/* =========================
-   UI DEL PLAYER
-========================= */
+/* EFECTOS VISUALES */
 
-function updatePlayerUI() {
+function startVisualizer(){
 
-  const playing = !audio.paused;
+canvas.width = canvas.offsetWidth;
+canvas.height = 80;
 
-  playPauseBtn.textContent = playing ? "⏸" : "▶";
+function draw(){
 
-  playPauseBtn.classList.toggle("playing", playing);
+requestAnimationFrame(draw);
 
-  playPauseBtn.setAttribute(
-    "aria-label",
-    playing ? "Pausar" : "Reproducir"
-  );
+analyser.getByteFrequencyData(dataArray);
 
-  if (currentSongEl) {
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    const icon = currentSongEl.querySelector(".song-play-icon");
+const bars = 60;
+const step = Math.floor(bufferLength/bars);
+const barWidth = canvas.width/bars;
 
-    if (icon) icon.textContent = playing ? "⏸" : "▶";
+const center = canvas.height/2;
 
-  }
+for(let i=0;i<bars;i++){
+
+const value = dataArray[i*step];
+const height = (value/255)*center;
+
+const x = i*barWidth;
+
+ctx.fillStyle = "#04CDA8";
+
+ctx.fillRect(x,center-height,barWidth*0.7,height);
+ctx.fillRect(x,center,barWidth*0.7,height);
 
 }
 
-/* =========================
-   VOLUMEN
-========================= */
+}
 
-volumeSlider.addEventListener("input", () => {
+draw();
 
-  audio.volume = parseFloat(volumeSlider.value);
-
-});
-
-/* =========================
-   SIDEBAR ACTIVA
-========================= */
-
-document.querySelectorAll(".iconsdbar a").forEach(link => {
-
-  link.addEventListener("click", function () {
-
-    document
-      .querySelectorAll(".iconsdbar a")
-      .forEach(l => l.classList.remove("active"));
-
-    this.classList.add("active");
-
-  });
-
-});
-audio.addEventListener("timeupdate", () => {
-  if (audio.duration) {
-    progressBar.value = audio.currentTime / audio.duration;
-  }
-});
-progressBar.addEventListener("input", () => {
-  audio.currentTime = progressBar.value * audio.duration;
-});
+}
