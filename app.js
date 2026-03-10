@@ -1,209 +1,285 @@
 const BACKEND = "%%BACKEND_URL%%";
 
-/* ELEMENTOS */
-
-const searchInput = document.getElementById("searchInput");
-const resultsEl = document.getElementById("results");
-
-const playPauseBtn = document.getElementById("playPauseBtn");
-const nowPlaying = document.getElementById("nowPlaying");
-const playerArtist = document.getElementById("playerArtist");
-const playerThumb = document.getElementById("playerThumb");
-
-const volumeSlider = document.getElementById("volumeSlider");
-const progressBar = document.getElementById("progressBar");
-
+/* === ELEMENTOS === */
+const searchInput   = document.getElementById("searchInput");
+const resultsEl     = document.getElementById("results");
+const playPauseBtn  = document.getElementById("playPauseBtn");
+const nowPlaying    = document.getElementById("nowPlaying");
+const playerArtist  = document.getElementById("playerArtist");
+const playerThumb   = document.getElementById("playerThumb");
+const volumeSlider  = document.getElementById("volumeSlider");
+const progressBar   = document.getElementById("progressBar");
 const currentTimeEl = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
+const durationEl    = document.getElementById("duration");
+const player        = document.getElementById("player");
+const canvas        = document.getElementById("canvas");
+const ctx           = canvas.getContext("2d");
+const openLoginBtn  = document.getElementById("openLogin");
+const closeLoginBtn = document.getElementById("closeLogin");
+const loginModal    = document.getElementById("loginModal");
 
-const player = document.getElementById("player");
-
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-
-/* AUDIO */
-
+/* === AUDIO === */
 const audio = new Audio();
 audio.volume = volumeSlider.value;
 
+/* === VISUALIZADOR (canvas animado — no toca el audio) === */
+let vizRunning = false;
 
-/* VISUALIZER SETUP */
+function startVisualizer() {
+  canvas.classList.remove("hidden");
+  if (vizRunning) return;
+  vizRunning = true;
+  canvas.width  = window.innerWidth;
+  canvas.height = 80;
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioCtx.createAnalyser();
+  function draw() {
+    if (!vizRunning) return;
+    requestAnimationFrame(draw);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-const source = audioCtx.createMediaElementSource(audio);
+    const bars     = 60;
+    const barWidth = canvas.width / bars;
+    const center   = canvas.height / 2;
+    const t        = Date.now() / 300;
 
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
+    for (let i = 0; i < bars; i++) {
+      const height = (Math.sin(t + i * 0.4) * 0.5 + 0.5)
+                   * (Math.sin(t * 0.7 + i * 0.2) * 0.3 + 0.7)
+                   * center * 0.9 + 2;
+      const x = i * barWidth;
+      ctx.fillStyle = "#04CDA8";
+      ctx.fillRect(x, center - height, barWidth * 0.7, height);
+      ctx.fillRect(x, center,          barWidth * 0.7, height);
+    }
+  }
+  draw();
+}
 
-analyser.fftSize = 256;
+function stopVisualizer() {
+  vizRunning = false;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.classList.add("hidden");
+}
 
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
+/* === ESTADO === */
+let currentSongCard = null;
+let searchTimeout   = null;
 
-
-/* BUSCADOR */
-
-searchInput.addEventListener("keydown", async e => {
-
-if(e.key !== "Enter") return;
-
-const query = searchInput.value.trim();
-if(!query) return;
-
-resultsEl.innerHTML = "Buscando...";
-
-const res = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
-
-const songs = await res.json();
-
-renderSongs(songs);
-
+/* === EVENTOS DE AUDIO === */
+audio.addEventListener("play", () => {
+  playPauseBtn.textContent = "⏸";
+  playPauseBtn.classList.add("playing");
+  startVisualizer();
 });
 
-
-/* RENDER */
-
-function renderSongs(songs){
-
-resultsEl.innerHTML = "";
-
-songs.forEach(song => {
-
-const div = document.createElement("div");
-
-div.className = "song";
-
-div.innerHTML = `
-<img src="${song.thumbnail}">
-<div class="song-info">
-<strong>${song.title}</strong>
-<small>${song.artist}</small>
-</div>
-`;
-
-div.onclick = ()=> loadSong(song);
-
-resultsEl.appendChild(div);
-
+audio.addEventListener("pause", () => {
+  playPauseBtn.textContent = "▶";
+  playPauseBtn.classList.remove("playing");
+  stopCardViz();
 });
 
-}
-
-
-/* CARGAR CANCIÓN */
-
-function loadSong(song){
-
-player.style.display = "flex";
-
-nowPlaying.textContent = song.title;
-playerArtist.textContent = song.artist;
-
-playerThumb.src = song.thumbnail;
-
-audio.src = `${BACKEND}/stream/${song.id}`;
-
-audio.play();
-
-canvas.classList.remove("hidden");
-
-startVisualizer();
-
-}
-
-
-/* PLAY PAUSE */
-
-playPauseBtn.onclick = ()=>{
-
-if(audio.paused) audio.play();
-else audio.pause();
-
-};
-
-
-/* VOLUMEN */
-
-volumeSlider.oninput = ()=>{
-
-audio.volume = volumeSlider.value;
-
-};
-
-
-/* PROGRESO */
-
-audio.addEventListener("timeupdate",()=>{
-
-if(audio.duration){
-
-progressBar.value = audio.currentTime / audio.duration;
-
-currentTimeEl.textContent = formatTime(audio.currentTime);
-durationEl.textContent = formatTime(audio.duration);
-
-}
-
+audio.addEventListener("ended", () => {
+  playPauseBtn.textContent = "▶";
+  playPauseBtn.classList.remove("playing");
+  stopCardViz();
+  if (currentSongCard) {
+    currentSongCard.querySelector(".song-play-icon").textContent = "▶";
+    currentSongCard.classList.remove("active-song");
+    currentSongCard = null;
+  }
 });
 
+/* === PROGRESO === */
+audio.addEventListener("timeupdate", () => {
+  if (audio.duration) {
+    progressBar.value = audio.currentTime / audio.duration;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    durationEl.textContent    = formatTime(audio.duration);
+  }
+});
 
-progressBar.oninput = ()=>{
-
-audio.currentTime = progressBar.value * audio.duration;
-
+progressBar.oninput = () => {
+  if (audio.duration) audio.currentTime = progressBar.value * audio.duration;
 };
 
-
-function formatTime(sec){
-
-const m = Math.floor(sec/60);
-const s = Math.floor(sec%60).toString().padStart(2,"0");
-
-return `${m}:${s}`;
-
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
 }
 
+/* === VOLUMEN === */
+volumeSlider.oninput = () => { audio.volume = volumeSlider.value; };
 
-/* VISUALIZADOR */
+/* === PLAY / PAUSE === */
+playPauseBtn.onclick = () => {
+  audio.paused ? audio.play() : audio.pause();
+};
 
-function startVisualizer(){
+/* === LOGIN === */
+openLoginBtn.addEventListener("click", () => loginModal.showModal());
+closeLoginBtn.addEventListener("click", () => loginModal.close());
 
-canvas.width = canvas.offsetWidth;
-canvas.height = 80;
+/* === BÚSQUEDA con debounce === */
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  const q = searchInput.value.trim();
+  if (!q) { resultsEl.innerHTML = ""; return; }
+  searchTimeout = setTimeout(() => buscar(q), 500);
+});
 
-function draw(){
-
-requestAnimationFrame(draw);
-
-analyser.getByteFrequencyData(dataArray);
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-const bars = 60;
-const step = Math.floor(bufferLength/bars);
-const barWidth = canvas.width/bars;
-
-const center = canvas.height/2;
-
-for(let i=0;i<bars;i++){
-
-const value = dataArray[i*step];
-const height = (value/255)*center;
-
-const x = i*barWidth;
-
-ctx.fillStyle = "#04CDA8";
-
-ctx.fillRect(x,center-height,barWidth*0.7,height);
-ctx.fillRect(x,center,barWidth*0.7,height);
-
+async function buscar(query) {
+  resultsEl.innerHTML = '<div class="loading-spinner"></div>';
+  try {
+    const resp = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
+    const songs = await resp.json();
+    renderSongs(songs);
+  } catch (e) {
+    resultsEl.innerHTML = '<p class="status-msg">❌ Error al buscar. Revisa tu conexión.</p>';
+  }
 }
 
+/* === BARRAS ANIMADAS EN CARD === */
+let activeCardCanvas = null;
+let cardVizRunning   = false;
+
+function startCardViz(cnv) {
+  if (activeCardCanvas === cnv && cardVizRunning) return;
+  stopCardViz();
+  activeCardCanvas = cnv;
+  cardVizRunning   = true;
+  cnv.classList.add("card-viz-active");
+  const c = cnv.getContext("2d");
+
+  function draw() {
+    if (!cardVizRunning || activeCardCanvas !== cnv) return;
+    requestAnimationFrame(draw);
+    c.clearRect(0, 0, cnv.width, cnv.height);
+
+    const bars     = 12;
+    const barW     = cnv.width / bars;
+    const center   = cnv.height / 2;
+    const t        = Date.now() / 280;
+
+    for (let i = 0; i < bars; i++) {
+      const h = (Math.sin(t + i * 0.5) * 0.5 + 0.5)
+              * (Math.sin(t * 0.6 + i * 0.3) * 0.3 + 0.7)
+              * center * 0.85 + 2;
+      const x = i * barW;
+      c.fillStyle = "#04CDA8";
+      c.fillRect(x + 1, center - h, barW - 2, h);
+      c.fillRect(x + 1, center,     barW - 2, h);
+    }
+  }
+  draw();
 }
 
-draw();
-
+function stopCardViz() {
+  if (activeCardCanvas) {
+    const c = activeCardCanvas.getContext("2d");
+    c.clearRect(0, 0, activeCardCanvas.width, activeCardCanvas.height);
+    activeCardCanvas.classList.remove("card-viz-active");
+  }
+  cardVizRunning   = false;
+  activeCardCanvas = null;
 }
+
+/* === RENDER CANCIONES === */
+function renderSongs(songs) {
+  if (!songs.length) {
+    resultsEl.innerHTML = '<p class="status-msg">No se encontraron resultados.</p>';
+    return;
+  }
+  resultsEl.innerHTML = "";
+  songs.forEach((song, i) => {
+    const card = document.createElement("div");
+    card.className = "song";
+    card.style.animationDelay = (i * 0.04) + "s";
+
+    // Wrapper del thumbnail con canvas encima
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "song-img-wrap";
+
+    const img = document.createElement("img");
+    img.src     = song.thumbnail || "";
+    img.alt     = song.title;
+    img.loading = "lazy";
+
+    const cnv = document.createElement("canvas");
+    cnv.className = "card-viz";
+
+    // Ajustar tamaño del canvas cuando la imagen carga
+    img.onload = () => {
+      cnv.width  = img.offsetWidth  || 136;
+      cnv.height = img.offsetHeight || 136;
+    };
+
+    imgWrap.append(img, cnv);
+
+    const nombre = document.createElement("strong");
+    nombre.textContent = song.title || "Sin título";
+
+    const artista = document.createElement("small");
+    artista.textContent = song.artist || "";
+
+    const playIcon = document.createElement("div");
+    playIcon.className   = "song-play-icon";
+    playIcon.textContent = "▶";
+
+    card.append(imgWrap, nombre, artista, playIcon);
+    card.addEventListener("click", () => loadSong(song, card, playIcon, cnv));
+    resultsEl.appendChild(card);
+  });
+}
+
+/* === CARGAR CANCIÓN === */
+function loadSong(song, card, playIcon, cnv) {
+  // Limpiar card anterior
+  if (currentSongCard && currentSongCard !== card) {
+    currentSongCard.classList.remove("active-song");
+    currentSongCard.querySelector(".song-play-icon").textContent = "▶";
+  }
+
+  // Misma canción → toggle
+  if (currentSongCard === card) {
+    if (audio.paused) {
+      audio.play();
+      // tamaño por si acaso
+      cnv.width  = cnv.offsetWidth  || 136;
+      cnv.height = cnv.offsetHeight || 136;
+      startCardViz(cnv);
+    } else {
+      audio.pause();
+      stopCardViz();
+    }
+    return;
+  }
+
+  currentSongCard = card;
+  card.classList.add("active-song");
+  playIcon.textContent = "⏸";
+
+  player.style.display      = "flex";
+  nowPlaying.textContent    = song.title;
+  playerArtist.textContent  = song.artist || "";
+  playerThumb.src           = song.thumbnail || "";
+  progressBar.value         = 0;
+  currentTimeEl.textContent = "0:00";
+  durationEl.textContent    = "0:00";
+
+  audio.src = `${BACKEND}/stream/${song.id}`;
+  audio.play().then(() => {
+    cnv.width  = cnv.offsetWidth  || 136;
+    cnv.height = cnv.offsetHeight || 136;
+    startCardViz(cnv);
+  }).catch(e => console.warn("Play bloqueado:", e));
+}
+
+/* === SIDEBAR ACTIVO === */
+document.querySelectorAll(".iconsdbar a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelectorAll(".iconsdbar a")
+            .forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
