@@ -5,12 +5,12 @@ const BACKEND = "https://mymusick-backend-production.up.railway.app";
 ═══════════════════════════════════════════ */
 const searchInput    = document.getElementById("searchInput");
 const searchSpinner  = document.getElementById("searchSpinner");
-const resultsEl      = document.getElementById("results");
-const resultsRoot    = document.getElementById("resultsRoot");
 const homeState      = document.getElementById("homeState");
+const resultsRoot    = document.getElementById("resultsRoot");
 const songsSection   = document.getElementById("songsSection");
 const artistsSection = document.getElementById("artistsSection");
 const albumsSection  = document.getElementById("albumsSection");
+const resultsEl      = document.getElementById("results");
 const artistsGrid    = document.getElementById("artistsGrid");
 const albumsGrid     = document.getElementById("albumsGrid");
 
@@ -35,8 +35,8 @@ const loginModal     = document.getElementById("loginModal");
 const audio = new Audio();
 audio.volume = 0.8;
 
+let currentSongs     = [];
 let currentSongIndex = -1;
-let currentSongs     = [];   // lista activa de canciones
 let currentSongCard  = null;
 let searchTimeout    = null;
 let activeCardCanvas = null;
@@ -66,7 +66,7 @@ audio.addEventListener("ended", () => {
 
 audio.addEventListener("timeupdate", () => {
   if (!audio.duration) return;
-  progressBar.value       = audio.currentTime / audio.duration;
+  progressBar.value         = audio.currentTime / audio.duration;
   currentTimeEl.textContent = formatTime(audio.currentTime);
   durationEl.textContent    = formatTime(audio.duration);
 });
@@ -94,21 +94,19 @@ function resetCurrentCard() {
   }
 }
 
-function showSection(section, show) {
-  section.style.display = show ? "block" : "none";
+function show(el, visible) {
+  el.style.display = visible ? "" : "none";
 }
 
 /* ═══════════════════════════════════════════
-   VOLUMEN / PLAY-PAUSE
+   VOLUMEN / CONTROLES
 ═══════════════════════════════════════════ */
 volumeSlider.oninput = () => { audio.volume = parseFloat(volumeSlider.value); };
+
 playPauseBtn.onclick = () => { audio.paused ? audio.play() : audio.pause(); };
 
-/* ═══════════════════════════════════════════
-   PREV / NEXT
-═══════════════════════════════════════════ */
 prevBtn.onclick = () => {
-  if (currentSongs.length === 0) return;
+  if (!currentSongs.length) return;
   const idx = currentSongIndex > 0 ? currentSongIndex - 1 : currentSongs.length - 1;
   playSongAtIndex(idx);
 };
@@ -116,7 +114,7 @@ prevBtn.onclick = () => {
 nextBtn.onclick = () => playNext();
 
 function playNext() {
-  if (currentSongs.length === 0) return;
+  if (!currentSongs.length) return;
   const idx = currentSongIndex < currentSongs.length - 1 ? currentSongIndex + 1 : 0;
   playSongAtIndex(idx);
 }
@@ -124,9 +122,10 @@ function playNext() {
 function playSongAtIndex(idx) {
   const song = currentSongs[idx];
   if (!song) return;
-  const card = resultsEl.children[idx];
-  const icon = card?.querySelector(".song-play-icon");
-  const cnv  = card?.querySelector("canvas");
+  const cards = resultsEl.querySelectorAll(".song");
+  const card  = cards[idx];
+  const icon  = card?.querySelector(".song-play-icon");
+  const cnv   = card?.querySelector("canvas");
   loadSong(song, card, icon, cnv, idx);
 }
 
@@ -144,8 +143,8 @@ searchInput.addEventListener("input", () => {
   const q = searchInput.value.trim();
 
   if (!q) {
-    homeState.style.display    = "flex";
-    resultsRoot.style.display  = "none";
+    show(homeState, true);
+    show(resultsRoot, false);
     return;
   }
 
@@ -153,15 +152,13 @@ searchInput.addEventListener("input", () => {
 });
 
 async function buscar(query) {
-  // Mostrar spinner, ocultar home
-  searchSpinner.style.display = "block";
-  homeState.style.display     = "none";
-  resultsRoot.style.display   = "block";
+  show(searchSpinner, true);
+  show(homeState, false);
+  show(resultsRoot, true);
 
-  // Limpiar secciones mientras carga
-  resultsEl.innerHTML    = '<p class="status-msg">Buscando…</p>';
-  artistsGrid.innerHTML  = "";
-  albumsGrid.innerHTML   = "";
+  resultsEl.innerHTML   = '<div class="loading-spinner"></div>';
+  artistsGrid.innerHTML = "";
+  albumsGrid.innerHTML  = "";
 
   try {
     const resp = await fetch(`${BACKEND}/search?q=${encodeURIComponent(query)}`);
@@ -175,44 +172,43 @@ async function buscar(query) {
     currentSongs     = songs;
     currentSongIndex = -1;
 
-    // — Canciones —
+    // Canciones
     if (songs.length > 0) {
       renderSongs(songs);
-      showSection(songsSection, true);
+      show(songsSection, true);
     } else {
-      resultsEl.innerHTML = '<p class="status-msg">Sin canciones.</p>';
-      showSection(songsSection, true);
+      resultsEl.innerHTML = '<p class="status-msg">Sin canciones para esta búsqueda.</p>';
+      show(songsSection, true);
     }
 
-    // — Artistas —
+    // Artistas
     if (artists.length > 0) {
       renderArtists(artists);
-      showSection(artistsSection, true);
+      show(artistsSection, true);
     } else {
-      showSection(artistsSection, false);
+      show(artistsSection, false);
     }
 
-    // — Álbumes —
+    // Álbumes
     if (albums.length > 0) {
       renderAlbums(albums);
-      showSection(albumsSection, true);
+      show(albumsSection, true);
     } else {
-      showSection(albumsSection, false);
+      show(albumsSection, false);
     }
 
-    // Si no hay nada
-    if (songs.length === 0 && artists.length === 0 && albums.length === 0) {
+    if (!songs.length && !artists.length && !albums.length) {
       resultsEl.innerHTML = '<p class="status-msg">No se encontraron resultados.</p>';
     }
 
   } catch (err) {
     console.error("Error en búsqueda:", err);
     resultsEl.innerHTML = '<p class="status-msg">❌ Error al buscar. Revisa tu conexión.</p>';
-    showSection(songsSection, true);
-    showSection(artistsSection, false);
-    showSection(albumsSection, false);
+    show(songsSection, true);
+    show(artistsSection, false);
+    show(albumsSection, false);
   } finally {
-    searchSpinner.style.display = "none";
+    show(searchSpinner, false);
   }
 }
 
@@ -225,27 +221,25 @@ function renderSongs(songs) {
   songs.forEach((song, i) => {
     const card = document.createElement("div");
     card.className = "song";
-    card.style.animationDelay = `${i * 0.035}s`;
+    card.style.animationDelay = `${i * 0.04}s`;
 
-    // Imagen + canvas visualizador
+    // Imagen + canvas
     const imgWrap = document.createElement("div");
     imgWrap.className = "song-img-wrap";
 
     const img = document.createElement("img");
-    img.src     = song.thumbnail || "";
+    img.src     = `https://i.ytimg.com/vi/${song.id}/maxresdefault.jpg`;
     img.alt     = song.title || "Sin título";
     img.loading = "lazy";
-    // Fallback si maxresdefault no existe
-    img.onerror = () => { img.src = `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`; };
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = song.thumbnail || `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`;
+    };
 
     const cnv = document.createElement("canvas");
     cnv.className = "card-viz";
 
     imgWrap.append(img, cnv);
-
-    // Info
-    const info = document.createElement("div");
-    info.className = "song-info";
 
     const titleEl = document.createElement("strong");
     titleEl.textContent = song.title || "Sin título";
@@ -253,24 +247,19 @@ function renderSongs(songs) {
     const artistEl = document.createElement("small");
     artistEl.textContent = song.artist || "Artista desconocido";
 
-    info.append(titleEl, artistEl);
-
-    // Álbum
     const albumEl = document.createElement("span");
     albumEl.className   = "song-album";
     albumEl.textContent = song.album || "";
 
-    // Duración
     const durEl = document.createElement("span");
     durEl.className   = "song-duration";
     durEl.textContent = song.duration || "";
 
-    // Icono play
     const playIcon = document.createElement("div");
     playIcon.className   = "song-play-icon";
     playIcon.textContent = "▶";
 
-    card.append(imgWrap, info, albumEl, durEl, playIcon);
+    card.append(imgWrap, titleEl, artistEl, albumEl, durEl, playIcon);
 
     card.addEventListener("click", () => {
       if (currentSongCard === card) {
@@ -301,16 +290,15 @@ function renderArtists(artists) {
       img.src       = artist.thumbnail;
       img.alt       = artist.name || "";
       img.loading   = "lazy";
-      img.onerror   = () => img.replaceWith(placeholderAvatar());
+      img.onerror   = () => img.replaceWith(makeAvatarPlaceholder());
       card.appendChild(img);
     } else {
-      card.appendChild(placeholderAvatar());
+      card.appendChild(makeAvatarPlaceholder());
     }
 
     const name = document.createElement("span");
     name.className   = "artist-name";
     name.textContent = artist.name || "Artista";
-
     card.appendChild(name);
 
     if (artist.subscribers) {
@@ -324,7 +312,7 @@ function renderArtists(artists) {
   });
 }
 
-function placeholderAvatar() {
+function makeAvatarPlaceholder() {
   const div = document.createElement("div");
   div.className   = "artist-avatar-placeholder";
   div.textContent = "🎤";
@@ -348,10 +336,10 @@ function renderAlbums(albums) {
       img.src       = album.thumbnail;
       img.alt       = album.title || "";
       img.loading   = "lazy";
-      img.onerror   = () => img.replaceWith(placeholderCover());
+      img.onerror   = () => img.replaceWith(makeCoverPlaceholder());
       card.appendChild(img);
     } else {
-      card.appendChild(placeholderCover());
+      card.appendChild(makeCoverPlaceholder());
     }
 
     const title = document.createElement("span");
@@ -367,7 +355,7 @@ function renderAlbums(albums) {
   });
 }
 
-function placeholderCover() {
+function makeCoverPlaceholder() {
   const div = document.createElement("div");
   div.className   = "album-cover-placeholder";
   div.textContent = "💿";
@@ -381,7 +369,7 @@ function loadSong(song, card, playIcon, cnv, index) {
   resetCurrentCard();
   stopCardViz();
 
-  currentSongCard  = card;
+  currentSongCard  = card || null;
   currentSongIndex = index ?? -1;
 
   if (card) {
@@ -389,12 +377,11 @@ function loadSong(song, card, playIcon, cnv, index) {
     if (playIcon) playIcon.textContent = "⏸";
   }
 
-  // Actualizar player
   player.style.display      = "flex";
   nowPlaying.textContent    = song.title  || "Sin título";
   playerArtist.textContent  = song.artist || "";
-  playerThumb.src           = song.thumbnail || "";
-  playerThumb.onerror       = () => { playerThumb.src = ""; };
+  playerThumb.src           = `https://i.ytimg.com/vi/${song.id}/maxresdefault.jpg`;
+  playerThumb.onerror       = () => { playerThumb.src = song.thumbnail || ""; };
 
   progressBar.value         = 0;
   currentTimeEl.textContent = "0:00";
@@ -404,9 +391,9 @@ function loadSong(song, card, playIcon, cnv, index) {
   audio.play()
     .then(() => {
       if (cnv && card) {
-        const imgEl = card.querySelector("img");
-        cnv.width  = imgEl?.offsetWidth  || 52;
-        cnv.height = imgEl?.offsetHeight || 52;
+        const imgEl  = card.querySelector("img");
+        cnv.width    = imgEl?.offsetWidth  || 136;
+        cnv.height   = imgEl?.offsetHeight || 136;
         startCardViz(cnv);
       }
     })
@@ -414,7 +401,7 @@ function loadSong(song, card, playIcon, cnv, index) {
 }
 
 /* ═══════════════════════════════════════════
-   VISUALIZADOR DE BARRAS
+   VISUALIZADOR
 ═══════════════════════════════════════════ */
 function startCardViz(cnv) {
   if (activeCardCanvas === cnv && cardVizRunning) return;
@@ -431,16 +418,13 @@ function startCardViz(cnv) {
   function draw() {
     if (!cardVizRunning || activeCardCanvas !== cnv) return;
     requestAnimationFrame(draw);
-
     ctx.clearRect(0, 0, cnv.width, cnv.height);
     const center = cnv.height / 2;
     const t      = Date.now() / 280;
-
     for (let i = 0; i < bars; i++) {
       const h = (Math.sin(t + i * 0.5) * 0.5 + 0.5)
               * (Math.sin(t * 0.6 + i * 0.3) * 0.3 + 0.7)
               * center * 0.85 + 2;
-
       ctx.fillStyle = "#04CDA8";
       ctx.fillRect(i * barW + 1, center - h, barW - 2, h);
       ctx.fillRect(i * barW + 1, center,     barW - 2, h * 0.6);
