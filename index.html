@@ -6,64 +6,116 @@
   <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
   <title>MYMUSICK</title>
   <link rel="icon" href="img/Logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/estilooriginal.css">
 </head>
 <body>
 
+<!-- ══════════════════ HEADER ══════════════════ -->
 <header class="header">
   <div class="header-left">
-    <div class="logo-placeholder">🎵</div>
+    <div class="logo-mark">M</div>
     <h1 class="title">MYMUSICK</h1>
   </div>
   <div class="header-center">
-    <input id="searchInput" class="search" type="search"
-           placeholder="Busca tu música 🎵" autocomplete="off">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" class="search" type="search"
+             placeholder="Artistas, canciones, álbumes…" autocomplete="off">
+      <div id="searchSpinner" class="search-spinner" style="display:none"></div>
+    </div>
   </div>
   <div class="header-right">
-    <button class="bttlg" id="openLogin">Iniciar Sesión</button>
+    <button class="bttlg" id="openLogin">Iniciar sesión</button>
   </div>
 </header>
 
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
 <aside class="sidebar">
   <nav class="iconsdbar">
-    <a href="#inicio" class="active"><span>🏠</span><span>Inicio</span></a>
-    <a href="#seguido"><span>👥</span><span>Seguidos</span></a>
-    <a href="#megusta"><span>❤️</span><span>Me gusta</span></a>
-    <a href="#descargas"><span>💾</span><span>Descargas</span></a>
+    <a href="#inicio" class="active" data-label="Inicio"><span class="nav-icon">⌂</span><span class="nav-txt">Inicio</span></a>
+    <a href="#seguido" data-label="Seguidos"><span class="nav-icon">♡</span><span class="nav-txt">Seguidos</span></a>
+    <a href="#megusta" data-label="Me gusta"><span class="nav-icon">★</span><span class="nav-txt">Me gusta</span></a>
+    <a href="#descargas" data-label="Descargas"><span class="nav-icon">↓</span><span class="nav-txt">Descargas</span></a>
   </nav>
 </aside>
 
-<main>
-  <p class="intxt">¿Qué vas a escuchar hoy?</p>
-  <section id="results" class="results"></section>
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main id="mainContent">
+  <!-- Estado inicial -->
+  <div id="homeState" class="home-state">
+    <p class="home-hero">¿Qué vas a escuchar hoy?</p>
+    <p class="home-sub">Busca una canción, artista o álbum arriba</p>
+  </div>
+
+  <!-- Resultados -->
+  <section id="resultsRoot" style="display:none">
+
+    <!-- CANCIONES -->
+    <div id="songsSection" class="results-section" style="display:none">
+      <h2 class="section-title">Canciones</h2>
+      <div id="results" class="results"></div>
+    </div>
+
+    <!-- ARTISTAS -->
+    <div id="artistsSection" class="results-section" style="display:none">
+      <h2 class="section-title">Artistas</h2>
+      <div id="artistsGrid" class="artists-grid"></div>
+    </div>
+
+    <!-- ÁLBUMES -->
+    <div id="albumsSection" class="results-section" style="display:none">
+      <h2 class="section-title">Álbumes</h2>
+      <div id="albumsGrid" class="albums-grid"></div>
+    </div>
+
+  </section>
 </main>
 
+<!-- ══════════════════ PLAYER ══════════════════ -->
 <footer id="player" style="display:none">
-  <img id="playerThumb" class="player-thumb" src="" alt="Portada">
-  <div class="player-text">
-    <span id="nowPlaying">Selecciona una canción</span>
-    <span id="playerArtist"></span>
+  <div class="player-left">
+    <img id="playerThumb" class="player-thumb" src="" alt="Portada">
+    <div class="player-text">
+      <span id="nowPlaying">Selecciona una canción</span>
+      <span id="playerArtist"></span>
+    </div>
   </div>
-  <div class="player-progress">
-    <span id="currentTime">0:00</span>
-    <input id="progressBar" type="range" min="0" max="1" step="0.001" value="0">
-    <span id="duration">0:00</span>
+  <div class="player-center">
+    <div class="player-controls">
+      <button id="prevBtn" class="ctrl-btn" title="Anterior">⏮</button>
+      <button id="playPauseBtn" class="ctrl-btn play-btn">▶</button>
+      <button id="nextBtn" class="ctrl-btn" title="Siguiente">⏭</button>
+    </div>
+    <div class="player-progress">
+      <span id="currentTime">0:00</span>
+      <input id="progressBar" type="range" min="0" max="1" step="0.001" value="0">
+      <span id="duration">0:00</span>
+    </div>
   </div>
-  <button id="playPauseBtn">▶</button>
-  <div class="volume-wrap">
-    <span>🔊</span>
+  <div class="player-right">
+    <span class="vol-icon">🔊</span>
     <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.8">
   </div>
 </footer>
 
-
+<!-- ══════════════════ LOGIN MODAL ══════════════════ -->
 <dialog id="loginModal">
   <form method="dialog" class="login-form">
     <button type="button" class="btn-close-dialog" id="closeLogin">✕</button>
-    <h3>Acceder</h3>
+    <div class="login-logo">M</div>
+    <h3>Bienvenido</h3>
     <p>Inicia sesión para guardar tu música</p>
-    <input type="text" placeholder="Usuario" required autocomplete="username">
-    <input type="password" placeholder="Contraseña" required autocomplete="current-password">
+    <label>
+      <span>Usuario</span>
+      <input type="text" placeholder="tu@email.com" required autocomplete="username">
+    </label>
+    <label>
+      <span>Contraseña</span>
+      <input type="password" placeholder="••••••••" required autocomplete="current-password">
+    </label>
     <button type="submit" class="btn-submit">Entrar</button>
   </form>
 </dialog>
