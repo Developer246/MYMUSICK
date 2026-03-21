@@ -98,6 +98,11 @@ function show(el, visible) {
   el.style.display = visible ? "" : "none";
 }
 
+// Thumbnail con fallback en cascada
+function getThumb(song) {
+  return song.thumbnail || `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`;
+}
+
 /* ═══════════════════════════════════════════
    VOLUMEN / CONTROLES
 ═══════════════════════════════════════════ */
@@ -228,12 +233,14 @@ function renderSongs(songs) {
     imgWrap.className = "song-img-wrap";
 
     const img = document.createElement("img");
-    img.src     = `https://i.ytimg.com/vi/${song.id}/maxresdefault.jpg`;
+    // Usar thumbnail del backend (mejor resolución via getBestThumbnail)
+    img.src     = getThumb(song);
     img.alt     = song.title || "Sin título";
     img.loading = "lazy";
+    // Fallback si la imagen no carga
     img.onerror = () => {
       img.onerror = null;
-      img.src = song.thumbnail || `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`;
+      img.src = `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`;
     };
 
     const cnv = document.createElement("canvas");
@@ -380,8 +387,13 @@ function loadSong(song, card, playIcon, cnv, index) {
   player.style.display      = "flex";
   nowPlaying.textContent    = song.title  || "Sin título";
   playerArtist.textContent  = song.artist || "";
-  playerThumb.src           = `https://i.ytimg.com/vi/${song.id}/maxresdefault.jpg`;
-  playerThumb.onerror       = () => { playerThumb.src = song.thumbnail || ""; };
+
+  // Usar thumbnail del backend para el player también
+  playerThumb.src     = getThumb(song);
+  playerThumb.onerror = () => {
+    playerThumb.onerror = null;
+    playerThumb.src = `https://i.ytimg.com/vi/${song.id}/hqdefault.jpg`;
+  };
 
   progressBar.value         = 0;
   currentTimeEl.textContent = "0:00";
