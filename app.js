@@ -399,6 +399,29 @@ function loadSong(song, card, playIcon, cnv, index) {
   currentTimeEl.textContent = "0:00";
   durationEl.textContent    = "0:00";
 
+  // ── Actualizar título de la pestaña ───────────────────────────────────
+  document.title = `${song.title} — ${song.artist || "MyMusick"}`;
+
+  // ── Media Session API (título + imagen en notificaciones del SO) ──────
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  song.title  || "Sin título",
+      artist: song.artist || "Desconocido",
+      album:  song.album  || "",
+      artwork: [
+        { src: getThumb(song), sizes: "512x512", type: "image/jpeg" },
+      ],
+    });
+
+    navigator.mediaSession.setActionHandler("play",     () => audio.play());
+    navigator.mediaSession.setActionHandler("pause",    () => audio.pause());
+    navigator.mediaSession.setActionHandler("previoustrack", () => prevBtn.onclick());
+    navigator.mediaSession.setActionHandler("nexttrack",     () => nextBtn.onclick());
+  }
+
+  // Hacer HEAD request primero para que el browser conozca Content-Length
+  // Esto resuelve el 0:00 cuando se accede directo al stream
+  fetch(`${BACKEND}/stream/${song.id}`, { method: "HEAD" }).catch(() => {});
   audio.src = `${BACKEND}/stream/${song.id}`;
   audio.play()
     .then(() => {
