@@ -703,6 +703,8 @@ dialog::backdrop { background: rgba(0,0,0,0.65); }
 @media (max-width: 600px) {
   .header { padding: 0 16px; }
   .header-center { padding: 0 12px; }
+  .search{width: 200px;}
+  .search:focus{width: 250px;}
   .title { display: none; }
   .sidebar { display: none; }
   main { margin-left: 0; }
