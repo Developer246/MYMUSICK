@@ -15,12 +15,47 @@
   --player-h:   80px;
 }
 
+/* ═══════════════════════════════════════════
+   RESET CROSS-PLATFORM
+   Fuerza rendering idéntico en Windows/macOS
+═══════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  /* Suavizado de fuentes igual en Windows y macOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbar personalizado — Windows muestra el scrollbar feo por defecto */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-black);
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 var(--bg-black);
+}
+
 body {
   margin: 0;
   padding-bottom: var(--player-h);
   background: var(--bg-black);
   color: var(--text-light);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* SF Pro en macOS, Segoe UI en Windows — misma jerarquía visual */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+               Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .hidden { display: none !important; }
@@ -103,6 +138,8 @@ body {
   font-size: 15px;
   outline: none;
   transition: 0.3s;
+  /* Evitar que Windows agregue borde azul de focus */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .search:focus {
@@ -112,6 +149,9 @@ body {
 
 .search::placeholder { color: #888; }
 .search::-webkit-search-cancel-button { display: none; }
+/* Windows Edge/Chrome agregan un ojo en inputs de texto */
+.search::-ms-reveal,
+.search::-ms-clear { display: none; }
 
 .search-spinner {
   position: absolute;
@@ -136,6 +176,8 @@ body {
   cursor: pointer;
   transition: 0.2s;
   white-space: nowrap;
+  /* Windows a veces agrega outline en botones */
+  outline: none;
 }
 .bttlg:hover { background: white; color: black; transform: scale(1.05); }
 
@@ -174,6 +216,9 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  /* Quitar highlight de tap en Windows touch */
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .sidebar a:hover,
@@ -213,7 +258,6 @@ main {
   text-align: center;
 }
 
-/* Etiquetas de sección */
 .section-label {
   font-family: "Gyanko";
   font-size: 22px;
@@ -273,6 +317,9 @@ main {
   transition: 0.2s;
   animation: fadeUp 0.4s ease both;
   position: relative;
+  /* Evitar selección de texto en Windows al hacer click rápido */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .song:hover {
@@ -292,6 +339,9 @@ main {
   border-radius: 12px;
   object-fit: cover;
   display: block;
+  /* Evitar arrastre de imágenes en Windows */
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .song-img-wrap {
@@ -356,6 +406,20 @@ main {
 .song:hover .song-play-icon,
 .song.active-song .song-play-icon { opacity: 1; transform: scale(1); }
 
+/* Badge explícito */
+.explicit-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #555;
+  color: #fff;
+  border-radius: 3px;
+  vertical-align: middle;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* ═══════════════════════════════════════════
    ARTISTAS
 ═══════════════════════════════════════════ */
@@ -375,6 +439,8 @@ main {
   cursor: pointer;
   animation: fadeUp 0.4s ease both;
   transition: transform 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .artist-card:hover { transform: translateY(-4px); }
 
@@ -384,6 +450,7 @@ main {
   object-fit: cover;
   border: 3px solid var(--primary);
   background: var(--bg-dark);
+  -webkit-user-drag: none;
 }
 
 .artist-avatar-placeholder {
@@ -432,6 +499,8 @@ main {
   cursor: pointer;
   animation: fadeUp 0.4s ease both;
   transition: transform 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .album-card:hover { transform: translateY(-5px); }
 
@@ -442,6 +511,7 @@ main {
   object-fit: cover;
   border: 1px solid #333;
   background: var(--bg-dark);
+  -webkit-user-drag: none;
 }
 
 .album-cover-placeholder {
@@ -498,6 +568,7 @@ footer#player {
   object-fit: cover;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  -webkit-user-drag: none;
 }
 
 .player-text {
@@ -525,7 +596,6 @@ footer#player {
   text-overflow: ellipsis;
 }
 
-/* Controles prev/play/next agrupados */
 .player-controls-wrap {
   display: flex;
   align-items: center;
@@ -546,6 +616,10 @@ footer#player {
   justify-content: center;
   transition: 0.2s;
   flex-shrink: 0;
+  outline: none;
+  /* Quitar estilos nativos de botón en Windows */
+  -webkit-appearance: none;
+  appearance: none;
 }
 .ctrl-side-btn:hover { background: rgba(0,0,0,0.4); }
 
@@ -562,11 +636,14 @@ footer#player {
   justify-content: center;
   flex-shrink: 0;
   transition: 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 #playPauseBtn:hover,
 #playPauseBtn.playing { background: var(--accent); color: black; }
 
-/* Progress */
+/* ── Sliders — estilo uniforme Windows/macOS ── */
 .player-progress {
   display: flex;
   align-items: center;
@@ -583,24 +660,77 @@ footer#player {
   flex-shrink: 0;
 }
 
-#progressBar {
+/* Reset completo del slider para que sea igual en todos los browsers */
+#progressBar,
+#volumeSlider {
   -webkit-appearance: none;
-  flex: 1;
-  height: 4px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 99px;
+  appearance: none;
   outline: none;
   cursor: pointer;
+  border-radius: 99px;
+  background: rgba(0,0,0,0.3);
+  border: none;
+  /* IE/Edge legacy */
+  overflow: hidden;
 }
-#progressBar::-webkit-slider-thumb {
+
+#progressBar {
+  flex: 1;
+  height: 4px;
+}
+
+/* Thumb — Chrome/Safari/Edge */
+#progressBar::-webkit-slider-thumb,
+#volumeSlider::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   width: 14px; height: 14px;
   border-radius: 50%;
   background: black;
   cursor: pointer;
+  border: none;
+  box-shadow: -100vw 0 0 100vw rgba(0,0,0,0.5);
 }
 
-/* Volume */
+/* Thumb — Firefox */
+#progressBar::-moz-range-thumb,
+#volumeSlider::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: black;
+  cursor: pointer;
+  border: none;
+}
+
+/* Track relleno — Firefox */
+#progressBar::-moz-range-track,
+#volumeSlider::-moz-range-track {
+  height: 4px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 99px;
+}
+
+/* Track relleno — IE/Edge legacy */
+#progressBar::-ms-track,
+#volumeSlider::-ms-track {
+  height: 4px;
+  background: rgba(0,0,0,0.3);
+  border-color: transparent;
+  color: transparent;
+}
+#progressBar::-ms-fill-lower,
+#volumeSlider::-ms-fill-lower {
+  background: black;
+  border-radius: 99px;
+}
+#progressBar::-ms-thumb,
+#volumeSlider::-ms-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: black;
+  border: none;
+}
+
 .volume-wrap {
   display: flex;
   align-items: center;
@@ -609,22 +739,12 @@ footer#player {
 }
 
 #volumeSlider {
-  -webkit-appearance: none;
-  width: 80px; height: 4px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 99px;
-  outline: none;
-  cursor: pointer;
+  width: 80px;
+  height: 4px;
 }
-#volumeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: black;
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-#volumeSlider:hover::-webkit-slider-thumb { transform: scale(1.3); }
+
+#volumeSlider:hover::-webkit-slider-thumb,
+#volumeSlider:hover::-moz-range-thumb { transform: scale(1.3); }
 
 /* ═══════════════════════════════════════════
    LOGIN DIALOG
@@ -666,9 +786,13 @@ dialog::backdrop { background: rgba(0,0,0,0.65); }
   transition: border-color 0.2s;
   width: 100%;
   box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .login-form input:focus { border-color: var(--primary); }
 .login-form input::placeholder { color: #555; }
+.login-form input::-ms-reveal,
+.login-form input::-ms-clear { display: none; }
 
 .btn-submit {
   background: var(--primary);
@@ -681,6 +805,9 @@ dialog::backdrop { background: rgba(0,0,0,0.65); }
   cursor: pointer;
   transition: 0.2s;
   margin-top: 4px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .btn-submit:hover { opacity: 0.88; }
 
@@ -694,6 +821,7 @@ dialog::backdrop { background: rgba(0,0,0,0.65); }
   line-height: 1;
   margin-bottom: -6px;
   transition: color 0.15s;
+  outline: none;
 }
 .btn-close-dialog:hover { color: white; }
 
@@ -703,8 +831,8 @@ dialog::backdrop { background: rgba(0,0,0,0.65); }
 @media (max-width: 600px) {
   .header { padding: 0 16px; }
   .header-center { padding: 0 12px; }
-  .search{width: 200px;}
-  .search:focus{width: 250px;}
+  .search { width: 200px; }
+  .search:focus { width: 250px; }
   .title { display: none; }
   .sidebar { display: none; }
   main { margin-left: 0; }
