@@ -1,57 +1,83 @@
-/* ═══════════════════════════
-   WINDOWS OVERRIDE REAL
-═══════════════════════════ */
+/* ═══════════════════════════════
+   WINDOWS FIX — VERSIÓN ESTABLE
+   (sin transform ni hacks raros)
+═══════════════════════════════ */
 
-/* Tamaño base menor (Windows renderiza más grande) */
+/* Windows suele renderizar más grande */
 .windows html {
-  font-size: 14.5px !important;
+  font-size: 15px;
 }
 
-/* Ajuste global */
+/* Suavizado tipográfico */
 .windows body {
-  transform: scale(0.97);
-  transform-origin: top left;
-  width: 103%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* HEADER */
-
-.windows .header {
-  height: 130px !important;
-}
-
-/* Título MYMUSICK */
+/* ─────────────────────────────
+   TÍTULO MYMUSICK
+───────────────────────────── */
 
 .windows .title {
-  letter-spacing: 0.6px;
-  font-weight: 400;
+  letter-spacing: 0.4px;
 }
 
-/* SIDEBAR */
+/* ─────────────────────────────
+   HEADER
+───────────────────────────── */
+
+.windows .header {
+  height: 140px;
+}
+
+/* ─────────────────────────────
+   SIDEBAR
+───────────────────────────── */
 
 .windows .sidebar {
-  width: 160px !important;
+  width: 165px;
 }
 
 .windows main {
-  margin-left: 160px !important;
+  margin-left: 165px;
 }
 
-/* CARDS */
+/* ─────────────────────────────
+   CARDS
+───────────────────────────── */
 
 .windows .song {
-  transform: scale(0.95);
+  width: 158px;
+  min-width: 158px;
 }
 
-/* PLAYER */
+/* Texto cards */
+
+.windows .song strong {
+  font-size: 13px;
+}
+
+.windows .song small {
+  font-size: 11px;
+}
+
+/* ─────────────────────────────
+   PLAYER
+───────────────────────────── */
 
 .windows footer#player {
-  height: 70px !important;
+  height: 72px;
 }
 
-/* TEXTO */
+.windows .player-thumb {
+  width: 46px;
+  height: 46px;
+}
 
-.windows * {
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* ─────────────────────────────
+   TEXTO GENERAL
+───────────────────────────── */
+
+.windows {
+  --text-light: #f2f2f2;
 }
