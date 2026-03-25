@@ -6,13 +6,11 @@
   <meta name="description" content="MYMUSICK - Busca y escucha tu música favorita.">
   <title>MYMUSICK</title>
   <link rel="icon" href="img/Logo.png">
-  <link rel="stylesheet" href="style/estilooriginal.css">
+<link rel="stylesheet" href="style/estilooriginal.css">
+<link rel="stylesheet" href="style/windows.css">
   <script>
-if (navigator.userAgent.includes("Windows")) {
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "windows.css";
-  document.head.appendChild(link);
+if (navigator.platform.includes("Win")) {
+  document.documentElement.classList.add("windows");
 }
 </script>
 </head>
