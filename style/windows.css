@@ -188,3 +188,6 @@ dialog {
 :root {
   --text-light: #f2f2f2;
 }
+.windows body {
+  background: red !important;
+}
