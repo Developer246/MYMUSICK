@@ -11,8 +11,8 @@
   --bg-dark:    #111;
   --bg-black:   #000;
   --text-light: #fff;
-  --header-h:   150px;
-  --player-h:   80px;
+  --header-h:   9.375rem;
+  --player-h:   5rem;
 }
 
 body {
@@ -35,16 +35,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
+  padding: 0 1.875rem;
   height: var(--header-h);
   background: var(--primary);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0.125rem 0.625rem rgba(0,0,0,0.3);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .logo {
