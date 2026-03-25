@@ -19,16 +19,19 @@
   --player-h: 80px;   /* 5rem */
 }
 html {
-  font-size: 16px;
+  font-size: 15.5px;
   scrollbar-gutter: stable;
 }
 body {
-  margin: 0;
-   zoom: 1;
-  padding-bottom: var(--player-h);
-  background: var(--bg-black);
-  color: var(--text-light);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+text-rendering: optimizeLegibility;
+margin: 0;
+zoom: 1;
+padding-bottom: var(--player-h);
+background: var(--bg-black);
+color: var(--text-light);
+font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .hidden { display: none !important; }
