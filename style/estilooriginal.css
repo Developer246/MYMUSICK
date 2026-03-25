@@ -14,10 +14,13 @@
   --header-h:   9.375rem;
   --player-h:   5rem;
 }
-
+html{
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
 body {
   margin: 0;
-  -webkit-text-size-adjust: 100%;
+   zoom: 1;
   padding-bottom: var(--player-h);
   background: var(--bg-black);
   color: var(--text-light);
