@@ -1,3 +1,57 @@
+/* ═══════════════════════════
+   WINDOWS OVERRIDE REAL
+═══════════════════════════ */
+
+/* Tamaño base menor (Windows renderiza más grande) */
+.windows html {
+  font-size: 14.5px !important;
+}
+
+/* Ajuste global */
 .windows body {
-  background: red !important;
+  transform: scale(0.97);
+  transform-origin: top left;
+  width: 103%;
+}
+
+/* HEADER */
+
+.windows .header {
+  height: 130px !important;
+}
+
+/* Título MYMUSICK */
+
+.windows .title {
+  letter-spacing: 0.6px;
+  font-weight: 400;
+}
+
+/* SIDEBAR */
+
+.windows .sidebar {
+  width: 160px !important;
+}
+
+.windows main {
+  margin-left: 160px !important;
+}
+
+/* CARDS */
+
+.windows .song {
+  transform: scale(0.95);
+}
+
+/* PLAYER */
+
+.windows footer#player {
+  height: 70px !important;
+}
+
+/* TEXTO */
+
+.windows * {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
