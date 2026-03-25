@@ -9,7 +9,14 @@
   <link rel="stylesheet" href="style/estilooriginal.css">
 </head>
 <body>
-
+<script>
+if (navigator.userAgent.includes("Windows")) {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "windows.css";
+  document.head.appendChild(link);
+}
+</script>
 <!-- ══════════════════ HEADER ══════════════════ -->
 <header class="header">
   <div class="header-left">
