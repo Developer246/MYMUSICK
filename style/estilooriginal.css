@@ -11,11 +11,11 @@
   --bg-dark:    #111;
   --bg-black:   #000;
   --text-light: #fff;
-  --header-h:   9.375rem;
-  --player-h:   5rem;
+  --header-h: 150px;  /* 9.375rem */
+  --player-h: 80px;   /* 5rem */
 }
-html{
-  -webkit-text-size-adjust: 100%;
+html {
+  font-size: 16px;
   scrollbar-gutter: stable;
 }
 body {
@@ -266,6 +266,7 @@ main {
 /* Song card */
 .song {
   width: 160px;
+  min-width: 160px;
   padding: 12px;
   background: var(--bg-dark);
   border-radius: 15px;
